@@ -3,35 +3,42 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:showIn="navigation_view">
 
-    <group android:checkableBehavior="single">
-        <item
-            android:id="@+id/nav_camera"
-            android:icon="@drawable/ic_menu_camera"
-            android:title="Import" />
-        <item
-            android:id="@+id/nav_gallery"
-            android:icon="@drawable/ic_menu_gallery"
-            android:title="Gallery" />
-        <item
-            android:id="@+id/nav_slideshow"
-            android:icon="@drawable/ic_menu_slideshow"
-            android:title="Slideshow" />
-        <item
-            android:id="@+id/nav_manage"
-            android:icon="@drawable/ic_menu_manage"
-            android:title="Tools" />
-    </group>
-
-    <item android:title="Communicate">
+    <item android:title="Ma Fac">
         <menu>
             <item
-                android:id="@+id/nav_share"
-                android:icon="@drawable/ic_menu_share"
-                android:title="Share" />
+                android:id="@+id/nav_geo"
+                android:icon="@drawable/google_maps"
+                android:title="Géolocalisation" />
             <item
-                android:id="@+id/nav_send"
-                android:icon="@drawable/ic_menu_send"
-                android:title="Send" />
+                android:id="@+id/nav_anomaly"
+                android:icon="@drawable/camera"
+                android:title="Anomalies" />
+        </menu>
+    </item>
+
+    <item android:title="Mes Cours">
+        <menu>
+            <item
+                android:id="@+id/nav_edt"
+                android:icon="@drawable/book"
+                android:title="EDT" />
+            <item
+                android:id="@+id/nav_qrcode"
+                android:icon="@drawable/qrcode"
+                android:title="Informations" />
+        </menu>
+    </item>
+
+    <item android:title="Configuration">
+        <menu>
+            <item
+                android:id="@+id/nav_params"
+                android:icon="@drawable/settings"
+                android:title="Paramètres" />
+            <item
+                android:id="@+id/nav_information"
+                android:icon="@drawable/information"
+                android:title="Informations" />
         </menu>
     </item>
 
