@@ -1,4 +1,4 @@
-package com.iTeam.easyUPS.activities;
+package com.iteam.easyups.activities;
 
 import android.content.pm.ApplicationInfo;
 import android.os.Bundle;
@@ -10,7 +10,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 
-import com.iTeam.easyUPS.R;
+import com.iteam.easyups.R;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {

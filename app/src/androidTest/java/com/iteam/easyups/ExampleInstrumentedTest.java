@@ -1,4 +1,4 @@
-package com.iTeam.easyUPS;
+package com.iteam.easyups;
 
 import android.content.Context;
 import android.support.test.InstrumentationRegistry;

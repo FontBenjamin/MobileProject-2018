@@ -1,10 +1,10 @@
-package com.iTeam.easyUPS.activities;
+package com.iteam.easyups.activities;
 
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 
-import com.iTeam.easyUPS.R;
+import com.iteam.easyups.R;
 
 /**
  * this activity is here only to display the launchescreen of the application
