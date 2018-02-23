@@ -1,5 +1,6 @@
 package com.iteam.easyups.activities;
 
+import android.content.Intent;
 import android.content.pm.ApplicationInfo;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
@@ -89,6 +90,8 @@ public class MainActivity extends AppCompatActivity
         } else if (id == R.id.nav_information) {
 
         } else if (id == R.id.nav_params) {
+            Intent signup = new Intent(this, SingupActivity.class);
+            startActivity(signup);
 
         } else if (id == R.id.nav_qrcode) {
 

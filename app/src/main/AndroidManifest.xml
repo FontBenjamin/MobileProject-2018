@@ -23,6 +23,9 @@
             android:name="com.iteam.easyups.activities.MainActivity"
             android:label="@string/title_activity_main2"
             android:theme="@style/AppTheme.NoActionBar"></activity>
+        <activity
+            android:name="com.iteam.easyups.activities.SingupActivity"
+            android:label="@string/title_activity_main2"></activity>
     </application>
 
 </manifest>
