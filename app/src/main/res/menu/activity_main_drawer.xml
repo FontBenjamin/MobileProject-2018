@@ -30,16 +30,16 @@
     </item>
 
     <item android:title="Configuration">
-        <menu>
-            <item
-                android:id="@+id/nav_params"
-                android:icon="@drawable/settings"
-                android:title="Paramètres" />
-            <item
-                android:id="@+id/nav_information"
-                android:icon="@drawable/information"
-                android:title="Informations" />
-        </menu>
-    </item>
+    <menu>
+        <item
+            android:id="@+id/nav_params"
+            android:icon="@drawable/settings"
+            android:title="Paramètres" />
+        <item
+            android:id="@+id/nav_information"
+            android:icon="@drawable/information"
+            android:title="Informations" />
+    </menu>
+</item>
 
 </menu>
