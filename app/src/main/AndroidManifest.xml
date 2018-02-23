@@ -23,6 +23,10 @@
             android:name="com.iteam.easyups.activities.MainActivity"
             android:label="@string/title_activity_main2"
             android:theme="@style/AppTheme.NoActionBar"></activity>
+        <activity
+            android:name="com.iteam.easyups.activities.GeolocationActivity"
+            android:label="GeolocationActivity"
+            android:theme="@style/AppTheme.NoActionBar"></activity>
     </application>
 
 </manifest>
