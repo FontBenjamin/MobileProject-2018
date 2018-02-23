@@ -1,4 +1,4 @@
-package com.example.benjamin.mobileproject_2018;
+package com.iTeam.easyUPS;
 
 import org.junit.Test;
 

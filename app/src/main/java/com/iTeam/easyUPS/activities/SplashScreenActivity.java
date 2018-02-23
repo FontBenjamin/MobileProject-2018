@@ -1,8 +1,10 @@
-package com.example.benjamin.mobileproject_2018;
+package com.iTeam.easyUPS.activities;
 
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+
+import com.iTeam.easyUPS.R;
 
 /**
  * this activity is here only to display the launchescreen of the application
