@@ -1,9 +1,14 @@
 package com.iteam.easyups.activities;
 
+import android.content.Context;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 
 import com.iteam.easyups.R;
+import com.iteam.easyups.communication.FormationService;
+import com.iteam.easyups.model.Formation;
 import com.iteam.easyups.utils.HtmlParser;
 
 import java.io.IOException;
@@ -21,8 +26,17 @@ public class EdtActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.edt_layout);
 
-            new HtmlParser().execute(edtMainPages);
+        if(isNetworkAvailable()){
+            new FormationService().saveAllFormation(edtMainPages);
+        }
+
+    }
 
 
+    private boolean isNetworkAvailable() {
+        ConnectivityManager connectivityManager
+                = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
+        return activeNetworkInfo != null && activeNetworkInfo.isConnected();
     }
 }
