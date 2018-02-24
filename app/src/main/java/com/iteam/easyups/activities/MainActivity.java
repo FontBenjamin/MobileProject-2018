@@ -1,5 +1,6 @@
 package com.iteam.easyups.activities;
 
+import android.content.Intent;
 import android.content.pm.ApplicationInfo;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
@@ -83,6 +84,8 @@ public class MainActivity extends AppCompatActivity
         if (id == R.id.nav_anomaly) {
             // Handle the camera action
         } else if (id == R.id.nav_edt) {
+            startActivity(new Intent(MainActivity.this, EdtActivity.class));
+
 
         } else if (id == R.id.nav_geo) {
 
