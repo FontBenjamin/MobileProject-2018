@@ -1,39 +1,23 @@
 package com.iteam.easyups.utils;
 
-import android.content.Context;
-import android.media.MediaScannerConnection;
 import android.os.AsyncTask;
-import android.os.Environment;
 import android.util.Log;
 
-import com.iteam.easyups.communication.FormationService;
+import com.google.firebase.database.DatabaseReference;
 import com.iteam.easyups.model.Formation;
 import com.iteam.easyups.model.FormationGroup;
 
-import org.apache.commons.io.FileUtils;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.nodes.Entities;
-import org.jsoup.parser.Parser;
 import org.jsoup.select.Elements;
 
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.StringWriter;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
-
-import javax.xml.transform.OutputKeys;
-import javax.xml.transform.Transformer;
-import javax.xml.transform.TransformerFactory;
-import javax.xml.transform.dom.DOMSource;
-import javax.xml.transform.stream.StreamResult;
 
 /**
  * Created by Marianna on 23/02/2018.
@@ -43,38 +27,40 @@ public class HtmlParser extends AsyncTask<String, Void, Void> {
 
     private String edtBaseQuery = "option[value~=https://edt.univ-tlse3.fr/]";
     private String edtGroupQuery = "resource[type=group]";
+    List<Formation> formations = new ArrayList<>();
+    private DatabaseReference database;
+
+    public HtmlParser(DatabaseReference ref){
+        database = ref;
+    }
 
     protected Void doInBackground(String... urls) {
-        for(String sUrl : urls){
-            Log.w("START PARSING  ", sUrl);
-            String dpt = "";
-            try {
-                URL url = new URL(sUrl);
-                dpt = url.getPath().split("/")[1];
-            } catch (MalformedURLException e) {
-                e.printStackTrace();
-            }
-            getEdtLinks(sUrl, dpt);
+
+        for(String url : urls){
+            Log.w("START PARSING  ", url);
+            getEdtLinks(url);
         }
 
         return null ;
     }
 
     protected void onPostExecute(Void arg) {
-         Log.w("END OF PARSING ", "Parsing completed");
-
+         Log.w("DATABASE INSERTION ", "Start database insertion");
+         for(Formation formation : formations){
+             saveFormation(formation);
+         }
+        Log.w("DATABASE INSERTION ", "Database insertion completed");
     }
 
-    private void getEdtLinks(String sUrl, String dpt){
-        FormationService s = new FormationService();
-        int i = 0;
+    private void getEdtLinks(String sUrl){
         for (Element link : getHtmlElements(sUrl, edtBaseQuery)) {
             String xmlLink  = link.attr("value").replace(".html", ".xml");
-            Log.e("TEXT : ", "- " + link.text() + " " + xmlLink);
+            //Log.e("TEXT : ", "- " + link.text() + " " + xmlLink);
             List<FormationGroup> groups = getEdtGroupsLinks(xmlLink);
-            Formation formation = new Formation(link.text(), xmlLink, groups, dpt);
-            s.saveFormation(formation);
+            Formation formation = new Formation(link.text(), xmlLink, groups);
+            formations.add(formation);
         }
+
     }
 
     private List<FormationGroup> getEdtGroupsLinks(String url){
@@ -82,7 +68,7 @@ public class HtmlParser extends AsyncTask<String, Void, Void> {
         for (Element link : getHtmlElements(url, edtGroupQuery)) {
             if(link.select("name") != null && link.select("link[href]") != null){
                 groups.add(new FormationGroup(link.select("name").text(),  link.select("link[href]").attr("href")));
-                Log.e("TEXT : ", "--- " + link.select("name").text() + " " + link.select("link[href]").attr("href"));
+               // Log.e("TEXT : ", "--- " + link.select("name").text() + " " + link.select("link[href]").attr("href"));
             }
         }
 
@@ -107,5 +93,11 @@ public class HtmlParser extends AsyncTask<String, Void, Void> {
         return elements;
     }
 
+
+    public void saveFormation(Formation formation){
+        formation.id = database.push().getKey();
+        database.child(formation.department).child(formation.level).child(formation.id).setValue(formation);
+
+    }
 
 }
