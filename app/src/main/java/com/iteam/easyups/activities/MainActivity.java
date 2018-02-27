@@ -84,7 +84,7 @@ public class MainActivity extends AppCompatActivity
         if (id == R.id.nav_anomaly) {
             // Handle the camera action
         } else if (id == R.id.nav_edt) {
-            startActivity(new Intent(MainActivity.this, EdtActivity.class));
+            startActivity(new Intent(MainActivity.this, TimetableActivity.class));
 
 
         } else if (id == R.id.nav_geo) {

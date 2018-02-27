@@ -25,5 +25,9 @@ public class FormationGroup {
 
     }
 
+    @Override
+    public String toString(){
+        return name;
+    }
 
 }

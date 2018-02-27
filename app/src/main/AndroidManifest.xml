@@ -27,7 +27,9 @@
             android:label="@string/title_activity_main2"
             android:theme="@style/AppTheme.NoActionBar"></activity>
         <activity
-            android:name="com.iteam.easyups.activities.EdtActivity"></activity>
+            android:name="com.iteam.easyups.activities.TimetableActivity"></activity>
+        <activity
+            android:name="com.iteam.easyups.activities.TimetableWebViewActivity"></activity>
     </application>
 
 </manifest>
