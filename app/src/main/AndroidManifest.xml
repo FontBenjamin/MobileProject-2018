@@ -2,6 +2,11 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.iteam.easyups">
 
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.RECORD_AUDIO" />
+
     <uses-permission android:name="android.permission.CAMERA" />
 
     <uses-feature android:name="android.hardware.camera" />
@@ -26,6 +31,13 @@
         <activity
             android:name=".activities.MainActivity"
             android:label="@string/title_activity_main2"
+            android:theme="@style/AppTheme.NoActionBar"></activity>
+        <activity
+            android:name="com.iteam.easyups.activities.TimetableActivity"></activity>
+        <activity
+            android:name="com.iteam.easyups.activities.TimetableWebViewActivity"></activity>
+        <activity
+            android:name="com.iteam.easyups.activities.InformationActivity"></activity>
             android:theme="@style/AppTheme.NoActionBar" />
         <activity android:name=".activities.ScanActivity"></activity>
     </application>

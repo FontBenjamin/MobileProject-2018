@@ -85,11 +85,11 @@ public class MainActivity extends AppCompatActivity
         if (id == R.id.nav_anomaly) {
             // Handle the camera action
         } else if (id == R.id.nav_edt) {
-
+            startActivity(new Intent(MainActivity.this, TimetableActivity.class));
         } else if (id == R.id.nav_geo) {
 
         } else if (id == R.id.nav_information) {
-
+            startActivity(new Intent(MainActivity.this, InformationActivity.class));
         } else if (id == R.id.nav_params) {
 
         } else if (id == R.id.nav_qrcode) {
