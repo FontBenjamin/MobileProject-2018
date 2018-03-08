@@ -67,7 +67,7 @@
                />
 
             <TextView
-                android:id="@+id/textViewSignup"
+                android:id="@+id/textSignup"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:padding="15dp"

@@ -26,7 +26,7 @@ import com.iteam.easyups.R;
 * https://www.youtube.com/watch?v=0NFwF7L-YA8
 *
 * */
-public class SingupActivity extends AppCompatActivity {
+public class SingupActivity extends AppCompatActivity implements View.OnClickListener {
 
     private FirebaseAuth auth;
     ProgressBar progressBar;
@@ -43,6 +43,9 @@ public class SingupActivity extends AppCompatActivity {
         emailText = findViewById(R.id.textEmail);
         pswdText = findViewById(R.id.textPassword);
         auth = FirebaseAuth.getInstance();
+
+        findViewById(R.id.buttonSignUp).setOnClickListener(this);
+        findViewById(R.id.textLogin).setOnClickListener(this);
     }
 
 
@@ -52,25 +55,25 @@ public class SingupActivity extends AppCompatActivity {
         String password = pswdText.getText().toString().trim();
 
         if (email.isEmpty()) {
-            emailText.setError("Email is required");
+            emailText.setError("Email est obligatoire");
             pswdText.requestFocus();
             return;
         }
 
         if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
-            emailText.setError("Please enter a valid email");
+            emailText.setError("Veuillez entrer un email valide");
             emailText.requestFocus();
             return;
         }
 
         if (password.isEmpty()) {
-            pswdText.setError("Password is required");
+            pswdText.setError("Mot de passe est obligatoire");
             pswdText.requestFocus();
             return;
         }
 
         if (password.length() < 6) {
-            pswdText.setError("Minimum lenght of password should be 6");
+            pswdText.setError("La longueur minimale du mot de passe est 6");
             pswdText.requestFocus();
             return;
         }
@@ -84,11 +87,11 @@ public class SingupActivity extends AppCompatActivity {
                 progressBar.setVisibility(View.GONE);
                 if (task.isSuccessful()) {
                     finish();
-                    startActivity(new Intent(SingupActivity.this, SingInActivity.class));
+                    startActivity(new Intent(SingupActivity.this, MainActivity.class));
                 } else {
 
                     if (task.getException() instanceof FirebaseAuthUserCollisionException) {
-                        Toast.makeText(getApplicationContext(), "You are already registered", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getApplicationContext(), "Vous êtes déjà inscrit", Toast.LENGTH_SHORT).show();
 
                     } else {
                         Toast.makeText(getApplicationContext(), task.getException().getMessage(), Toast.LENGTH_SHORT).show();
@@ -99,10 +102,23 @@ public class SingupActivity extends AppCompatActivity {
         });
 
     }
+    @Override
+    public void onClick(View view) {
+        switch (view.getId()) {
+            case R.id.buttonSignUp:
+                registerUser();
+                break;
 
-
-
+            case R.id.textLogin:
+                finish();
+                startActivity(new Intent(this, SingInActivity.class));
+                break;
+        }
     }
+
+
+
+}
 
 
 

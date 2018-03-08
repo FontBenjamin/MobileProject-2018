@@ -64,7 +64,7 @@
                 android:textAllCaps="false" />
 
             <TextView
-                android:id="@+id/textViewLogin"
+                android:id="@+id/textLogin"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:padding="15dp"
