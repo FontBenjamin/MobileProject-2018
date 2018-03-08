@@ -87,7 +87,7 @@ public class SingupActivity extends AppCompatActivity implements View.OnClickLis
                 progressBar.setVisibility(View.GONE);
                 if (task.isSuccessful()) {
                     finish();
-                    startActivity(new Intent(SingupActivity.this, MainActivity.class));
+                    startActivity(new Intent(SingupActivity.this, SingInActivity.class));
                 } else {
 
                     if (task.getException() instanceof FirebaseAuthUserCollisionException) {
@@ -111,7 +111,9 @@ public class SingupActivity extends AppCompatActivity implements View.OnClickLis
 
             case R.id.textLogin:
                 finish();
+                System.out.print("avant de passer");
                 startActivity(new Intent(this, SingInActivity.class));
+                System.out.print("passer");
                 break;
         }
     }

@@ -31,6 +31,9 @@
             android:name="com.iteam.easyups.activities.SingupActivity"
             android:label="@string/title_activity_main2"></activity>
         <activity
+            android:name="com.iteam.easyups.activities.SingInActivity"
+            android:label="@string/title_activity_main2"></activity>
+        <activity
             android:name="com.iteam.easyups.activities.TimetableActivity"></activity>
         <activity
             android:name="com.iteam.easyups.activities.TimetableWebViewActivity"></activity>
