@@ -16,6 +16,7 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Base64;
+import android.util.Log;
 import android.view.View;
 import android.webkit.URLUtil;
 import android.widget.ImageView;
@@ -93,37 +94,53 @@ public class ScanActivity extends AppCompatActivity {
                     lastResult = result.getResult();
                         if(isNetworkAvailable()){
                             // analyse the content
+                            try {
                             database.getReference().child(result.getText()).addListenerForSingleValueEvent(
                                     new ValueEventListener() {
                                         @Override
                                         public void onDataChange(DataSnapshot dataSnapshot) {
-                                           // for (final DataSnapshot data : dataSnapshot.getChildren()) {
+
+                                                // for (final DataSnapshot data : dataSnapshot.getChildren()) {
                                                 // we print the object, image or text
+                                                System.out.println(dataSnapshot.toString());
                                                 String textData = dataSnapshot.getValue().toString();
-                                                System.out.println(textData);
                                                 // if the string is an image
-                                                try{
-                                                    byte [] encodeByte=Base64.decode(textData,Base64.DEFAULT);
-                                                    Bitmap bitmap=BitmapFactory.decodeByteArray(encodeByte, 0, encodeByte.length);
-                                                    textQRCode.setVisibility(View.INVISIBLE);
-                                                     textViewWaitScan.setVisibility(View.INVISIBLE);
-                                                     progressBar.setVisibility(View.INVISIBLE);
-                                                     imageQRCode.setVisibility(View.VISIBLE);
-                                                     imageQRCode.setImageBitmap(bitmap);
-                                                }catch(Exception e){
+                                                if (textData.substring(0, 6).equals("image/")) {
+                                                    try {
+                                                        byte[] encodeByte = Base64.decode(textData.substring(6, textData.length()), Base64.DEFAULT);
+                                                        Bitmap bitmap = BitmapFactory.decodeByteArray(encodeByte, 0, encodeByte.length);
+                                                        textQRCode.setVisibility(View.INVISIBLE);
+                                                        textViewWaitScan.setVisibility(View.INVISIBLE);
+                                                        progressBar.setVisibility(View.INVISIBLE);
+                                                        imageQRCode.setVisibility(View.VISIBLE);
+                                                        imageQRCode.setImageBitmap(bitmap);
+                                                    } catch (Exception e) {
+                                                        Log.e("error", "Image parsing error !", e);
+                                                    }
+                                                } else {
                                                     imageQRCode.setVisibility(View.INVISIBLE);
                                                     textViewWaitScan.setVisibility(View.INVISIBLE);
                                                     progressBar.setVisibility(View.INVISIBLE);
                                                     textQRCode.setVisibility(View.VISIBLE);
-                                                    textQRCode.setText(textData);                                                }
-                                            }
+                                                    textQRCode.setText(textData);
+                                                }
+                                            
+                                        }
                                         //}
                                         @Override
                                         public void onCancelled(DatabaseError databaseError) {
 
                                         }
                                     }
+
                             );
+                        }catch(Exception e){
+                                imageQRCode.setVisibility(View.INVISIBLE);
+                                textViewWaitScan.setVisibility(View.INVISIBLE);
+                                progressBar.setVisibility(View.INVISIBLE);
+                                textQRCode.setVisibility(View.VISIBLE);
+                                textQRCode.setText("Erreur de scan : ce QR code n'est pas relié à la base de données de l'université.");
+                            }
                         }
 
                         // on fait un traitement par rapport à la bd
