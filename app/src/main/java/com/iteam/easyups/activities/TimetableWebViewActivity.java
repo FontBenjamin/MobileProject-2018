@@ -31,6 +31,7 @@ public class TimetableWebViewActivity extends AppCompatActivity {
         mContext = this;
         Intent i = getIntent();
         displayEdt(i.getStringExtra("timeTableUrl"));
+        webView.getSettings().setBuiltInZoomControls(true);
     }
 
     private void displayEdt(String timeTableUrl){
