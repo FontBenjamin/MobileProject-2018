@@ -171,7 +171,7 @@ public class TimetableActivity extends AppCompatActivity {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
             confirmButton.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
         }
-        confirmButton.setBackgroundColor(Color.argb(1,192,11,18));
+        confirmButton.setBackgroundColor(Color.argb(255,192,11,18));
         confirmButton.setGravity(Gravity.BOTTOM);
         confirmButton.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
         confirmButton.setOnClickListener(new View.OnClickListener() {
