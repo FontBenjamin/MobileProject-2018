@@ -1,9 +1,12 @@
 package com.iteam.easyups.activities;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Gravity;
@@ -13,6 +16,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.Spinner;
 import android.widget.TabHost;
 import android.widget.TextView;
@@ -44,6 +48,8 @@ public class TimetableActivity extends AppCompatActivity {
     private final static String FORMATION_PATH = "easyups/formations/";
     private Context mContext;
     private TabHost tabHost;
+    private ProgressBar progress;
+    private  TextView text;
 
 
     @Override
@@ -51,7 +57,8 @@ public class TimetableActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.edt_layout);
         mContext = this;
-
+        text = findViewById(R.id.textViewSpinners);
+        progress = findViewById(R.id.progressBarSpinner);
         tabHost = (TabHost)findViewById(R.id.tab_host);
         tabHost.setup();
 
@@ -102,7 +109,8 @@ public class TimetableActivity extends AppCompatActivity {
      * @param data the department (FSI, F2SMH)
      * @return the new view
      */
-    private View createTabView( DataSnapshot data){
+    @SuppressLint("ResourceAsColor")
+    private View createTabView(DataSnapshot data){
         LinearLayout linearLayout = initTabLayout();
         Spinner spinnerLevel = initLevelSpinner(data);
         final Spinner spinnerFormation = new Spinner(mContext);
@@ -159,6 +167,11 @@ public class TimetableActivity extends AppCompatActivity {
 
         Button confirmButton = new Button(mContext);
         confirmButton.setText("Go !");
+        confirmButton.setTextColor(Color.WHITE);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+            confirmButton.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
+        }
+        confirmButton.setBackgroundColor(Color.argb(1,192,11,18));
         confirmButton.setGravity(Gravity.BOTTOM);
         confirmButton.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
         confirmButton.setOnClickListener(new View.OnClickListener() {
@@ -192,7 +205,8 @@ public class TimetableActivity extends AppCompatActivity {
 
         linearLayout.addView(confirmButton);
 
-
+        progress.setVisibility(View.INVISIBLE);
+        text.setVisibility(View.INVISIBLE);
         return linearLayout;
     }
 
