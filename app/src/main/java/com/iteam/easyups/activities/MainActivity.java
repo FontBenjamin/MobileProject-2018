@@ -1,6 +1,8 @@
 package com.iteam.easyups.activities;
 
 import android.content.Intent;
+import android.arch.lifecycle.GenericLifecycleObserver;
+import android.content.Intent;
 import android.content.pm.ApplicationInfo;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
@@ -12,7 +14,6 @@ import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 
 import com.iteam.easyups.R;
-
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -87,13 +88,13 @@ public class MainActivity extends AppCompatActivity
         } else if (id == R.id.nav_edt) {
             startActivity(new Intent(MainActivity.this, TimetableActivity.class));
         } else if (id == R.id.nav_geo) {
-
+            Intent geolocation = new Intent(this, GeolocationActivity.class);
+            startActivity(geolocation);
         } else if (id == R.id.nav_information) {
             startActivity(new Intent(MainActivity.this, InformationActivity.class));
         } else if (id == R.id.nav_params) {
             Intent signup = new Intent(this, SingupActivity.class);
             startActivity(signup);
-
         } else if (id == R.id.nav_qrcode) {
             Intent intent = new Intent(this, ScanActivity.class);
             startActivity(intent);
