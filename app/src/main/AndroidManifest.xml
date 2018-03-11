@@ -7,16 +7,23 @@
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
 
+    <uses-permission android:name="android.permission.CAMERA" />
+
+    <uses-feature android:name="android.hardware.camera" />
+    <uses-feature android:name="android.hardware.camera.autofocus" />
+
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme">
+        android:theme="@style/AppTheme"
+        >
         <activity
-            android:name="com.iteam.easyups.activities.SplashScreenActivity"
-            android:theme="@style/SplashTheme">
+            android:name=".activities.SplashScreenActivity"
+            android:theme="@style/SplashTheme"
+            android:configChanges="orientation|screenSize">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -24,10 +31,12 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="com.iteam.easyups.activities.MainActivity"
+            android:name=".activities.MainActivity"
             android:label="@string/title_activity_main2"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+            android:theme="@style/AppTheme.NoActionBar"
+            android:configChanges="orientation|screenSize"></activity>
         <activity
+
             android:name="com.iteam.easyups.activities.SingupActivity"
             android:label="@string/title_activity_main2"></activity>
         <activity
@@ -36,12 +45,22 @@
         <activity
             android:name="com.iteam.easyups.activities.ProfileActivity"
             android:label="@string/title_activity_main2"></activity>
-               <activity
-            android:name="com.iteam.easyups.activities.TimetableActivity"></activity>
         <activity
-            android:name="com.iteam.easyups.activities.TimetableWebViewActivity"></activity>
+            android:name="com.iteam.easyups.activities.TimetableActivity">
+            android:configChanges="orientation|screenSize"></activity>
         <activity
-            android:name="com.iteam.easyups.activities.InformationActivity"></activity>
+            android:name="com.iteam.easyups.activities.TimetableWebViewActivity"
+            android:theme="@style/noAnimTheme"
+            android:configChanges="orientation|screenSize">
+
+        </activity>
+        <activity
+            android:name="com.iteam.easyups.activities.InformationActivity"
+            android:configChanges="orientation|screenSize"
+            ></activity>
+        />
+        <activity android:name=".activities.ScanActivity"
+            android:configChanges="orientation|screenSize"></activity>
     </application>
 
 </manifest>
