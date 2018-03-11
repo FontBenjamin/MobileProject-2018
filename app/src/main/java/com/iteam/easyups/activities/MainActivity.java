@@ -13,6 +13,7 @@ import android.view.MenuItem;
 
 import com.iteam.easyups.R;
 
+
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
@@ -94,7 +95,8 @@ public class MainActivity extends AppCompatActivity
             startActivity(signup);
 
         } else if (id == R.id.nav_qrcode) {
-
+            Intent intent = new Intent(this, ScanActivity.class);
+            startActivity(intent);
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
