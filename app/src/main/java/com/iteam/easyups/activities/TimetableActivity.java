@@ -10,6 +10,9 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Gravity;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -25,6 +28,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.iteam.easyups.R;
@@ -32,6 +36,7 @@ import com.iteam.easyups.adapter.DataSnapshotSpinnerAdapter;
 import com.iteam.easyups.communication.DatabaseConnection;
 import com.iteam.easyups.model.Formation;
 import com.iteam.easyups.model.FormationGroup;
+import com.iteam.easyups.model.User;
 import com.iteam.easyups.utils.HtmlParser;
 
 import java.util.ArrayList;
@@ -52,32 +57,28 @@ public class TimetableActivity extends AppCompatActivity {
     private TabHost tabHost;
     private ProgressBar progress;
     private  TextView text;
-    FirebaseAuth auth;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        auth = FirebaseAuth.getInstance();
-        final FirebaseUser user = auth.getCurrentUser();
-        //check user is logged in
-        if (user != null) {
-            String edt = user.getUid();
-            //create real user
-            //check if edt is filled
-            //yes : display edt
-            //no: display choice of formation
-        }
-
         setContentView(R.layout.edt_layout);
         mContext = this;
-        text = findViewById(R.id.textViewSpinners);
-        progress = findViewById(R.id.progressBarSpinner);
-        tabHost = (TabHost)findViewById(R.id.tab_host);
-        tabHost.setup();
 
         if(isNetworkAvailable()){
             saveAllFormation();
         }
+        initSearchFormation();
+
+
+    }
+
+
+    private void initSearchFormation(){
+        text = findViewById(R.id.textViewSpinners);
+        progress = findViewById(R.id.progressBarSpinner);
+        tabHost = (TabHost)findViewById(R.id.tab_host);
+        tabHost.setup();
         getFormationByLevel();
     }
 
