@@ -8,6 +8,7 @@ import java.util.Random;
 import android.Manifest;
 import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
@@ -27,8 +28,10 @@ import android.provider.MediaStore;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.text.Layout;
 import android.util.Base64;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -39,7 +42,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.Toast;
 
 import com.google.firebase.database.FirebaseDatabase;
@@ -80,7 +87,7 @@ public class IncidentActivity extends AppCompatActivity {
             Bundle extras = data.getExtras();
             Bitmap imageBitmap = (Bitmap) extras.get("data");
             mImageView.setImageBitmap(imageBitmap);
-           // savePicture(imageBitmap);
+            chooseCriticity(imageBitmap);
         }
     }
 
@@ -89,6 +96,43 @@ public class IncidentActivity extends AppCompatActivity {
         Anomaly anomaly = new Anomaly(imageBitmap, Criticality.COMFORT);
         anomaly.id =  database.getReference().push().getKey();
         database.getReference().child(BDDRoutes.ANOMALY_PATH).child(anomaly.id).setValue(anomaly);
+
+
+    }
+
+
+    private void chooseCriticity(final Bitmap imageBitmap){
+        final AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(this);
+
+        dialogBuilder.setTitle("Choisir le niveau de criticité");
+        LinearLayout layout = new LinearLayout(this);
+
+        LayoutInflater inflater = this.getLayoutInflater();
+        View dialogView = inflater.inflate(R.layout.criticity_layout, null);
+        RadioGroup radioGroup = (RadioGroup) dialogView.findViewById(R.id.radioGroup);
+        RadioButton button;
+        for(Criticality crit : Criticality.values()) {
+            button = new RadioButton(this);
+            button.setText(crit.getLabel());
+            radioGroup.addView(button);
+        }
+
+        dialogBuilder.setNegativeButton("Annuler", new DialogInterface.OnClickListener() {
+
+            public void onClick(DialogInterface dialog, int WhichButton)  {
+                dialog.cancel();
+            }
+        });
+        dialogBuilder.setPositiveButton("Envoyer", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int which) {
+                //save in db
+                //savePicture(imageBitmap);
+            }
+        });
+
+        dialogBuilder.setView(dialogView);
+        AlertDialog alertDialog = dialogBuilder.create();
+        alertDialog.show();
 
 
     }

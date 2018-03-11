@@ -16,7 +16,7 @@ public enum Criticality {
         this.label = label;
     }
 
-    public String label() {
+    public String getLabel() {
         return label;
     }
 
