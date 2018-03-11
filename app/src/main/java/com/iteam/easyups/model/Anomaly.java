@@ -18,8 +18,8 @@ public class Anomaly {
 
     @Exclude
     public String id;
-    String encodedImage;
-    Criticality criticality;
+    public String encodedImage;
+    public Criticality criticality;
 
 
 
