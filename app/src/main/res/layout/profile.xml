@@ -5,16 +5,23 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="30dp"
+        android:text=" Appuyez sur l'appareil photo pour choisir votre photo de profile"
+        android:textAppearance="@style/TextAppearance.AppCompat" />
+
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="155dp">
+        android:layout_height="128dp">
 
         <ImageView
             android:id="@+id/imageView"
-            android:layout_width="100dp"
-            android:layout_height="100dp"
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:layout_alignParentBottom="true"
             android:layout_centerHorizontal="true"
-            android:layout_margin="20dp"
+            android:layout_marginBottom="14dp"
             android:background="@drawable/camera"
             android:scaleType="centerCrop" />
 
@@ -30,23 +37,56 @@
 
     <TextView
         android:layout_width="match_parent"
-        android:layout_height="79dp"
-        android:text="Appuyez sur l'appareil photo pour choisir votre photo de profil"
-        android:textAlignment="center"
-        android:textAppearance="@style/Base.TextAppearance.AppCompat.Medium" />
+        android:layout_height="wrap_content"
+        android:text="Nom" />
 
     <EditText
         android:id="@+id/pseudo"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="PseudoName" />
+        android:hint="Prénom NOM" />
 
-    <EditText
-        android:id="@+id/edtText"
+    <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="EDT" />
+        android:text="Faculté" />
 
+    <Spinner
+        android:id="@+id/edtText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Niveau" />
+
+    <Spinner
+        android:id="@+id/niveauText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Intitulé" />
+
+    <Spinner
+        android:id="@+id/intituleText"
+        android:layout_width="match_parent"
+
+        android:layout_height="wrap_content" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Groupe" />
+
+    <Spinner
+        android:id="@+id/groupeText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
 
     <Button
         android:id="@+id/buttonSave"

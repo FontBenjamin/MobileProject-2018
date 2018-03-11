@@ -111,9 +111,7 @@ public class SingupActivity extends AppCompatActivity implements View.OnClickLis
 
             case R.id.textLogin:
                 finish();
-                System.out.print("avant de passer");
                 startActivity(new Intent(this, SingInActivity.class));
-                System.out.print("passer");
                 break;
         }
     }

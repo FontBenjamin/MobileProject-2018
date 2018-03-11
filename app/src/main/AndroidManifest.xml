@@ -28,18 +28,15 @@
             android:label="@string/title_activity_main2"
             android:theme="@style/AppTheme.NoActionBar"></activity>
         <activity
-            android:name="com.iteam.easyups.activities.SingupActivity"
-            android:label="@string/title_activity_main2"></activity>
+            android:name="com.iteam.easyups.activities.SingupActivity"></activity>
         <activity
-            android:name="com.iteam.easyups.activities.SingInActivity"
-            android:label="@string/title_activity_main2"></activity>
+            android:name="com.iteam.easyups.activities.SingInActivity"></activity>
         <activity
-            android:name="com.iteam.easyups.activities.ProfileActivity"
-            android:label="@string/title_activity_main2"></activity>
+            android:name="com.iteam.easyups.activities.ProfileActivity"></activity>
                <activity
             android:name="com.iteam.easyups.activities.TimetableActivity"></activity>
         <activity
-            android:name="com.iteam.easyups.activities.TimetableWebViewActivity"></activity>
+             android:name="com.iteam.easyups.activities.TimetableWebViewActivity"></activity>
         <activity
             android:name="com.iteam.easyups.activities.InformationActivity"></activity>
     </application>

@@ -9,31 +9,19 @@ import com.google.firebase.database.Exclude;
 public class User {
 
 
-    public  String PseudoName;
+    public  String name;
     public  String EDT;
     @Exclude
     public String id;
 
-    public String getPseudoName() {
-        return PseudoName;
+    public User() {
     }
 
-    public User(String pseudoName, String EDT) {
-        PseudoName = pseudoName;
+    public User(String name, String EDT) {
+        this.name = name;
         this.EDT = EDT;
     }
 
-    public void setPseudoName(String pseudoName) {
-        PseudoName = pseudoName;
-    }
-
-    public String getEDT() {
-        return EDT;
-    }
-
-    public void setEDT(String EDT) {
-        this.EDT = EDT;
-    }
 
 
 }
