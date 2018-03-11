@@ -1,0 +1,52 @@
+package com.iteam.easyups.model;
+
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.util.Base64;
+
+import com.google.firebase.database.Exclude;
+import com.google.firebase.database.IgnoreExtraProperties;
+
+import java.io.ByteArrayOutputStream;
+import java.util.List;
+
+/**
+ * Created by Marianna on 11/03/2018.
+ */
+@IgnoreExtraProperties
+public class Anomaly {
+
+    @Exclude
+    public String id;
+    String encodedImage;
+    Criticality criticality;
+
+
+
+    public Anomaly (){
+
+    }
+
+
+    public Anomaly (Bitmap img, Criticality crit){
+        this.encodedImage = encodeImage(img);
+        this.criticality = crit;
+
+    }
+
+    private String encodeImage(Bitmap img){
+        ByteArrayOutputStream stream = new ByteArrayOutputStream();
+        img.compress(Bitmap.CompressFormat.JPEG, 100, stream);
+        byte[] byteFormat = stream.toByteArray();
+        return Base64.encodeToString(byteFormat, Base64.NO_WRAP);
+    }
+
+    private Bitmap decodeImage(){
+        byte[] decodedString = Base64.decode(encodedImage, Base64.DEFAULT);
+        return BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
+    }
+
+
+
+
+}
