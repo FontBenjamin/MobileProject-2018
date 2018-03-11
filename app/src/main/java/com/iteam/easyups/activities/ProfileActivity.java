@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -89,7 +90,7 @@ public class ProfileActivity extends AppCompatActivity {
         imageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                showImageChooser();
+                //showImageChooser();
             }
         });
         getFormationByLevel();
@@ -98,7 +99,7 @@ public class ProfileActivity extends AppCompatActivity {
         findViewById(R.id.buttonSave).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                saveUserInformation();
+                // saveUserInformation();
             }
         });
     }
@@ -125,7 +126,7 @@ public class ProfileActivity extends AppCompatActivity {
 
                 @Override
                 public void onCancelled(DatabaseError databaseError) {
-                    System.out.println("The read failed: " + databaseError.getCode());
+                    System.out.println("Erreur " + databaseError.getCode());
                 }
             });
 
@@ -263,29 +264,29 @@ public class ProfileActivity extends AppCompatActivity {
 
 
     public void initLevelSpinner(String text) {
-        final String leval = text;
+       final String leval = text;
         database.getReference().child("easyups/formations/" + leval).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
 
-                final List<String> niveau = new ArrayList<String>();
+                List<String> arrayNiveau = new ArrayList<String>();
 
                 for (DataSnapshot areaSnapshot : dataSnapshot.getChildren()) {
-                    niveau.add(areaSnapshot.getKey());
+                    arrayNiveau.add(areaSnapshot.getKey());
 
 
                 }
-                adapter = new ArrayAdapter<String>(getApplicationContext(), android.R.layout.simple_spinner_item, niveau);
+                adapter = new ArrayAdapter<String>(getApplicationContext(), android.R.layout.simple_spinner_item, arrayNiveau);
                 adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
                 niveauText.setAdapter(adapter);
                 niveauText.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                     @Override
                     public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
                         // your code here
-                        String niveau = EdtText.getSelectedItem().toString();
-                        // initformationSpinner(leval, niveau);
-                        DataSnapshot data = (DataSnapshot)parentView.getItemAtPosition(position);
-                        updateFormationSpinner(intituleText, data);
+                          String niveau = EdtText.getSelectedItem().toString();
+                          initformationSpinner(leval, niveau);
+                        //DataSnapshot data = (DataSnapshot) parentView.getItemAtPosition(position);
+                        //updateFormationSpinner(intituleText, data);
                     }
 
                     @Override
@@ -309,27 +310,28 @@ public class ProfileActivity extends AppCompatActivity {
     public void initformationSpinner(String text, String niveau) {
         final String leval = text;
 
-        database.getReference().child("easyups/formations/" + leval + "/" + niveau + "/").addValueEventListener(new ValueEventListener() {
+        database.getReference().child("easyups/formations/" + leval + "/" + niveau ).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
+                List<String> array = new ArrayList<String>();
+                for (DataSnapshot ds : dataSnapshot.getChildren()) {
 
-                final List<String> niveau = new ArrayList<String>();
+                    String name = ds.child("name").getValue(String.class);
 
-                for (DataSnapshot areaSnapshot : dataSnapshot.getChildren()) {
-                    Formation formation = areaSnapshot.getValue(Formation.class);
-
-                    niveau.add(formation.name);
+                    Log.d("TAG", name);
+                    array.add(name);
 
                 }
-                adapter = new ArrayAdapter<String>(getApplicationContext(), android.R.layout.simple_spinner_item, niveau);
+
+                adapter = new ArrayAdapter<String>(getApplicationContext(), android.R.layout.simple_spinner_item, array);
                 adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
                 intituleText.setAdapter(adapter);
                 intituleText.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                     @Override
                     public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
                         // your code here
-                        String niveau = EdtText.getSelectedItem().toString();
-                        initformationSpinner(leval, niveau);
+                        //String niveau = EdtText.getSelectedItem().toString();
+                        //initformationSpinner(leval, niveau);
                     }
 
                     @Override

@@ -17,7 +17,13 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.internal.FederatedSignInActivity;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.iteam.easyups.R;
+import com.iteam.easyups.communication.DatabaseConnection;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class SingInActivity extends AppCompatActivity implements View.OnClickListener {
 
@@ -78,6 +84,7 @@ public class SingInActivity extends AppCompatActivity implements View.OnClickLis
             public void onComplete(@NonNull Task<AuthResult> task) {
                 bar.setVisibility(View.GONE);
                 if (task.isSuccessful()) {
+
                     finish();
                     Intent intent = new Intent(SingInActivity.this, ProfileActivity.class);
                     intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
