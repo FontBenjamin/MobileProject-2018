@@ -21,6 +21,8 @@ import android.widget.Spinner;
 import android.widget.TabHost;
 import android.widget.TextView;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.FirebaseDatabase;
@@ -50,11 +52,22 @@ public class TimetableActivity extends AppCompatActivity {
     private TabHost tabHost;
     private ProgressBar progress;
     private  TextView text;
-
+    FirebaseAuth auth;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        auth = FirebaseAuth.getInstance();
+        final FirebaseUser user = auth.getCurrentUser();
+        //check user is logged in
+        if (user != null) {
+            String edt = user.getUid();
+            //create real user
+            //check if edt is filled
+            //yes : display edt
+            //no: display choice of formation
+        }
+
         setContentView(R.layout.edt_layout);
         mContext = this;
         text = findViewById(R.id.textViewSpinners);
@@ -67,6 +80,7 @@ public class TimetableActivity extends AppCompatActivity {
         }
         getFormationByLevel();
     }
+
 
 
     private boolean isNetworkAvailable() {
