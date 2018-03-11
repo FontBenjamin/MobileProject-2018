@@ -45,7 +45,7 @@ public class TimetableActivity extends AppCompatActivity {
     private String[] edtMainPages = {"https://edt.univ-tlse3.fr/FSI/2017_2018/index.html", "https://edt.univ-tlse3.fr/F2SMH/2017_2018/index.html"};
     private String timeTableUrl = "";
     private FirebaseDatabase database = DatabaseConnection.getDatabase();
-    private final static String FORMATION_PATH = "easyups/formations/";
+    public final static String FORMATION_PATH = "easyups/formations/";
     private Context mContext;
     private TabHost tabHost;
     private ProgressBar progress;
