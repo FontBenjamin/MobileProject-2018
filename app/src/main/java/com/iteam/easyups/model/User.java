@@ -18,6 +18,10 @@ public class User {
         return pseudoName;
     }
 
+    public User() {
+
+    }
+
     public User(String pseudoName, String edt) {
         this.pseudoName = pseudoName;
         this.edt = edt;
