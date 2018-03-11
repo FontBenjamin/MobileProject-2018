@@ -1,49 +1,18 @@
 package com.iteam.easyups.activities;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.util.List;
-import java.util.Random;
 
-import android.Manifest;
+
 import android.app.AlertDialog;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.pm.PackageManager;
-import android.content.res.Configuration;
+
 import android.graphics.Bitmap;
-import android.graphics.Canvas;
-import android.graphics.Color;
-import android.graphics.Paint;
-import android.hardware.Camera;
-import android.hardware.Camera.CameraInfo;
-import android.hardware.Camera.Size;
-import android.hardware.SensorManager;
-import android.location.Location;
-import android.location.LocationListener;
-import android.location.LocationManager;
 import android.os.Bundle;
 import android.provider.MediaStore;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
-import android.text.Layout;
-import android.util.Base64;
-import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
-import android.view.OrientationEventListener;
-import android.view.SurfaceHolder;
-import android.view.SurfaceView;
 import android.view.View;
-import android.view.ViewGroup;
-import android.view.Window;
-import android.view.WindowManager;
 import android.widget.Button;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
@@ -55,6 +24,7 @@ import com.iteam.easyups.communication.BDDRoutes;
 import com.iteam.easyups.communication.DatabaseConnection;
 import com.iteam.easyups.model.Anomaly;
 import com.iteam.easyups.model.Criticality;
+import com.theartofdev.edmodo.cropper.CropImageView;
 
 /**
  * Created by Marianna on 09/03/2018.
@@ -63,14 +33,22 @@ import com.iteam.easyups.model.Criticality;
 public class IncidentActivity extends AppCompatActivity {
 
     static final int REQUEST_IMAGE_CAPTURE = 1;
-    private ImageView mImageView;
+    private CropImageView mImageView;
     private FirebaseDatabase database = DatabaseConnection.getDatabase();
+    private Button buttonEnvoi;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.incident_layout);
-        mImageView = (ImageView) findViewById(R.id.imagePicture);
+        mImageView =  findViewById(R.id.imagePicture);
+        buttonEnvoi = findViewById(R.id.buttonEnvoieAnomalie);
+        buttonEnvoi.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                chooseCriticity(IncidentActivity.this.mImageView.getCroppedImage());
+            }
+        });
         dispatchTakePictureIntent();
     }
 
@@ -87,29 +65,26 @@ public class IncidentActivity extends AppCompatActivity {
             Bundle extras = data.getExtras();
             Bitmap imageBitmap = (Bitmap) extras.get("data");
             mImageView.setImageBitmap(imageBitmap);
-            chooseCriticity(imageBitmap);
         }
     }
 
 
-    private void savePicture(Bitmap imageBitmap){
-        Anomaly anomaly = new Anomaly(imageBitmap, Criticality.COMFORT);
+    private void savePicture(Bitmap imageBitmap, Criticality criticality){
+        Anomaly anomaly = new Anomaly(imageBitmap, criticality);
         anomaly.id =  database.getReference().push().getKey();
         database.getReference().child(BDDRoutes.ANOMALY_PATH).child(anomaly.id).setValue(anomaly);
-
-
     }
 
 
-    private void chooseCriticity(final Bitmap imageBitmap){
+    public void chooseCriticity(final Bitmap imageBitmap){
         final AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(this);
 
         dialogBuilder.setTitle("Choisir le niveau de criticité");
         LinearLayout layout = new LinearLayout(this);
 
         LayoutInflater inflater = this.getLayoutInflater();
-        View dialogView = inflater.inflate(R.layout.criticity_layout, null);
-        RadioGroup radioGroup = (RadioGroup) dialogView.findViewById(R.id.radioGroup);
+        final View dialogView = inflater.inflate(R.layout.criticity_layout, null);
+        final RadioGroup radioGroup = dialogView.findViewById(R.id.radioGroup);
         RadioButton button;
         for(Criticality crit : Criticality.values()) {
             button = new RadioButton(this);
@@ -126,7 +101,27 @@ public class IncidentActivity extends AppCompatActivity {
         dialogBuilder.setPositiveButton("Envoyer", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int which) {
                 //save in db
-                //savePicture(imageBitmap);
+                int selectedId = radioGroup.getCheckedRadioButtonId();
+
+                // find the radiobutton by returned id
+                RadioButton radioButton = dialogView.findViewById(selectedId);
+
+                Criticality c = Criticality.COMFORT;
+                switch (radioButton.getText().toString()){
+                    case "Confort" :
+                        c = Criticality.COMFORT;
+                        break;
+                    case "Problème" :
+                        c = Criticality.PROBLEM;
+                        break;
+                    case "Danger" :
+                        c = Criticality.DANGER ;
+                        break;
+                }
+                Toast.makeText(IncidentActivity.this,
+                        c.toString(), Toast.LENGTH_SHORT).show();
+                savePicture(imageBitmap,c);
+                //finish();
             }
         });
 
