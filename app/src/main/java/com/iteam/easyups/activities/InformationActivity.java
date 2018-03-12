@@ -60,7 +60,6 @@ public class InformationActivity extends AppCompatActivity{
         tabHost.addTab(tabAbout);
         tabHost.addTab(tabGeneral);
 
-        /*TODO handle exception when phone is in landscape*/
         try {
             soundMeter.start();
         } catch (IOException e) {

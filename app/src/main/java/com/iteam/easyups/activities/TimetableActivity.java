@@ -10,6 +10,9 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Gravity;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -21,15 +24,20 @@ import android.widget.Spinner;
 import android.widget.TabHost;
 import android.widget.TextView;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.iteam.easyups.R;
 import com.iteam.easyups.adapter.DataSnapshotSpinnerAdapter;
+import com.iteam.easyups.communication.BDDRoutes;
 import com.iteam.easyups.communication.DatabaseConnection;
 import com.iteam.easyups.model.Formation;
 import com.iteam.easyups.model.FormationGroup;
+import com.iteam.easyups.model.User;
 import com.iteam.easyups.utils.HtmlParser;
 
 import java.util.ArrayList;
@@ -45,7 +53,6 @@ public class TimetableActivity extends AppCompatActivity {
     private String[] edtMainPages = {"https://edt.univ-tlse3.fr/FSI/2017_2018/index.html", "https://edt.univ-tlse3.fr/F2SMH/2017_2018/index.html"};
     private String timeTableUrl = "";
     private FirebaseDatabase database = DatabaseConnection.getDatabase();
-    public final static String FORMATION_PATH = "easyups/formations/";
     private Context mContext;
     private TabHost tabHost;
     private ProgressBar progress;
@@ -57,16 +64,24 @@ public class TimetableActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.edt_layout);
         mContext = this;
-        text = findViewById(R.id.textViewSpinners);
-        progress = findViewById(R.id.progressBarSpinner);
-        tabHost = (TabHost)findViewById(R.id.tab_host);
-        tabHost.setup();
 
         if(isNetworkAvailable()){
             saveAllFormation();
         }
+        initSearchFormation();
+
+
+    }
+
+
+    private void initSearchFormation(){
+        text = findViewById(R.id.textViewSpinners);
+        progress = findViewById(R.id.progressBarSpinner);
+        tabHost = (TabHost)findViewById(R.id.tab_host);
+        tabHost.setup();
         getFormationByLevel();
     }
+
 
 
     private boolean isNetworkAvailable() {
@@ -78,7 +93,7 @@ public class TimetableActivity extends AppCompatActivity {
 
 
     public void getFormationByLevel(){
-        database.getReference().child(FORMATION_PATH).addListenerForSingleValueEvent(
+        database.getReference().child(BDDRoutes.FORMATION_PATH).addListenerForSingleValueEvent(
                 new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
@@ -272,8 +287,8 @@ public class TimetableActivity extends AppCompatActivity {
 
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                if (!dataSnapshot.child(FORMATION_PATH).exists()) {
-                    new HtmlParser( database.getReference().child(FORMATION_PATH)).execute(edtMainPages);
+                if (!dataSnapshot.child(BDDRoutes.FORMATION_PATH).exists()) {
+                    new HtmlParser( database.getReference().child(BDDRoutes.FORMATION_PATH)).execute(edtMainPages);
                 }
             }
 

@@ -3,8 +3,13 @@ package com.iteam.easyups.activities;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.content.Context;
+import android.content.Intent;
+import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
+import android.support.annotation.NonNull;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
@@ -38,6 +43,7 @@ import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.iteam.easyups.R;
 import com.iteam.easyups.adapter.DataSnapshotSpinnerAdapter;
+import com.iteam.easyups.communication.BDDRoutes;
 import com.iteam.easyups.communication.DatabaseConnection;
 import com.iteam.easyups.model.Formation;
 import com.iteam.easyups.model.FormationGroup;
@@ -95,6 +101,7 @@ public class ProfileActivity extends AppCompatActivity {
         getFormationByLevel();
         initFormationSpinner();
 
+        //loadUserInformation();
 
         findViewById(R.id.buttonSave).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -192,8 +199,9 @@ public class ProfileActivity extends AppCompatActivity {
 
             String userId = user.getUid();
             FirebaseDatabase data = DatabaseConnection.getDatabase();
-            DatabaseReference dataReference = data.getReference().child("easyups/Users").child(userId);
-            getFormationByLevel();
+
+            DatabaseReference dataReference= data.getReference().child(BDDRoutes.USERS_PATH).child(userId);
+
 
             Map newPost = new HashMap();
             newPost.put("name", name);

@@ -1,7 +1,12 @@
 package com.iteam.easyups.activities;
 
+import android.content.Context;
+import android.content.Intent;
+import android.arch.lifecycle.GenericLifecycleObserver;
 import android.content.Intent;
 import android.content.pm.ApplicationInfo;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -11,11 +16,21 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.iteam.easyups.R;
-
+import com.iteam.easyups.communication.BDDRoutes;
+import com.iteam.easyups.communication.DatabaseConnection;
+import com.iteam.easyups.model.User;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
+    private FirebaseAuth auth;
+    private FirebaseDatabase database = DatabaseConnection.getDatabase();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -25,6 +40,7 @@ public class MainActivity extends AppCompatActivity
         int stringId = applicationInfo.labelRes;
         String result = stringId == 0 ? applicationInfo.nonLocalizedLabel.toString() : this.getString(stringId);
         this.setTitle(result);
+        auth = FirebaseAuth.getInstance();
 
         // we set our custom action bar
         /**ActionBar actionBar = getSupportActionBar();
@@ -83,17 +99,22 @@ public class MainActivity extends AppCompatActivity
         int id = item.getItemId();
 
         if (id == R.id.nav_anomaly) {
-            // Handle the camera action
+            startActivity(new Intent(MainActivity.this, IncidentActivity.class));
         } else if (id == R.id.nav_edt) {
-            startActivity(new Intent(MainActivity.this, TimetableActivity.class));
-        } else if (id == R.id.nav_geo) {
+            if(isNetworkAvailable()){
+               getUserEdt();
+            }else{
+                startActivity(new Intent(MainActivity.this, TimetableActivity.class));
+            }
 
+        } else if (id == R.id.nav_geo) {
+            Intent geolocation = new Intent(this, GeolocationActivity.class);
+            startActivity(geolocation);
         } else if (id == R.id.nav_information) {
             startActivity(new Intent(MainActivity.this, InformationActivity.class));
         } else if (id == R.id.nav_params) {
             Intent signup = new Intent(this, SingupActivity.class);
             startActivity(signup);
-
         } else if (id == R.id.nav_qrcode) {
             Intent intent = new Intent(this, ScanActivity.class);
             startActivity(intent);
@@ -102,5 +123,44 @@ public class MainActivity extends AppCompatActivity
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
+    }
+
+    private boolean isNetworkAvailable() {
+        ConnectivityManager connectivityManager
+                = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
+        return activeNetworkInfo != null && activeNetworkInfo.isConnected();
+    }
+
+    private void getUserEdt(){
+        final FirebaseUser user = auth.getCurrentUser();
+        //check user is logged in
+        if (user != null) {
+            String userID = user.getUid();
+            database.getReference().child(BDDRoutes.USERS_PATH).child(userID).addListenerForSingleValueEvent(
+                    new ValueEventListener() {
+                        @Override
+                        public void onDataChange(DataSnapshot dataSnapshot) {
+                            User user = dataSnapshot.getValue(User.class);
+                            //TODO remove when functionnal
+                            //user.setEDT("https://edt.univ-tlse3.fr/F2SMH/2017_2018/L1/L1_STAPS/g223424.xml");
+                            if(user.EDT != null){
+                                Intent i = new Intent(MainActivity.this, TimetableWebViewActivity.class);
+                                i.putExtra("timeTableUrl", user.EDT);
+                                startActivity(i);
+                            }else{
+                                startActivity(new Intent(MainActivity.this, TimetableActivity.class));
+                            }
+                        }
+                        @Override
+                        public void onCancelled(DatabaseError databaseError) {
+
+                        }
+                    }
+            );
+
+        }else{
+            startActivity(new Intent(MainActivity.this, TimetableActivity.class));
+        }
     }
 }

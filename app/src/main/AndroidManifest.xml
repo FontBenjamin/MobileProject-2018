@@ -11,6 +11,17 @@
 
     <uses-feature android:name="android.hardware.camera" />
     <uses-feature android:name="android.hardware.camera.autofocus" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
+    <uses-feature android:name="android.hardware.location.gps" />
+
+
+    <uses-permission android:name="android.permission.CAMERA" />
+
+    <uses-feature android:name="android.hardware.camera" />
+    <uses-feature android:name="android.hardware.camera.autofocus" />
+
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
 
     <application
         android:allowBackup="true"
@@ -20,35 +31,59 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name="com.iteam.easyups.activities.SplashScreenActivity"
-            android:theme="@style/SplashTheme">
+            android:name=".activities.SplashScreenActivity"
+            android:theme="@style/SplashTheme"
+            android:configChanges="orientation|screenSize">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
         <activity
-            android:name="com.iteam.easyups.activities.MainActivity"
+            android:name=".activities.MainActivity"
             android:label="@string/title_activity_main2"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+            android:theme="@style/AppTheme.NoActionBar"
+            android:configChanges="orientation|screenSize">
+        </activity>
+
         <activity
             android:name="com.iteam.easyups.activities.SingupActivity"></activity>
         <activity
             android:name="com.iteam.easyups.activities.SingInActivity"></activity>
         <activity
             android:name="com.iteam.easyups.activities.ProfileActivity"></activity>
-               <activity
-            android:name="com.iteam.easyups.activities.TimetableActivity"></activity>
         <activity
-            android:name="com.iteam.easyups.activities.TimetableWebViewActivity"></activity>
+            android:name="com.iteam.easyups.activities.TimetableActivity">
+            android:configChanges="orientation|screenSize">
+        </activity>
+
+        <activity
+            android:name="com.iteam.easyups.activities.TimetableWebViewActivity"
+            android:theme="@style/noAnimTheme"
+            android:configChanges="orientation|screenSize">
+        </activity>
         <activity
             android:name="com.iteam.easyups.activities.InformationActivity"
-            android:configChanges="orientation|screenSize"
-            ></activity>
-        />
+            android:configChanges="orientation|screenSize">
+        </activity>
+
         <activity android:name=".activities.ScanActivity"
-            android:configChanges="orientation|screenSize"></activity>
+            android:configChanges="orientation|screenSize">
+        </activity>
+
+        <activity
+            android:name=".activities.GeolocationActivity"
+            android:label="GeolocationActivity"
+            android:theme="@style/AppTheme.NoActionBar">
+        </activity>
+
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="@string/google_maps_key" />
+        <activity
+            android:name="com.iteam.easyups.activities.IncidentActivity"></activity>
     </application>
 
 </manifest>
