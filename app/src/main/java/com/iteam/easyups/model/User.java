@@ -9,24 +9,21 @@ import com.google.firebase.database.Exclude;
 public class User {
 
 
-    public  String name;
-    public  String EDT;
+    public String name;
+    public String EDT;
     @Exclude
     public String id;
-
 
 
     public User() {
 
     }
-    
 
 
     public User(String name, String EDT) {
         this.name = name;
         this.EDT = EDT;
     }
-
 
 
 }

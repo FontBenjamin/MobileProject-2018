@@ -200,7 +200,7 @@ public class ProfileActivity extends AppCompatActivity {
             String userId = user.getUid();
             FirebaseDatabase data = DatabaseConnection.getDatabase();
 
-            DatabaseReference dataReference= data.getReference().child(BDDRoutes.USERS_PATH).child(userId);
+            DatabaseReference dataReference = data.getReference().child(BDDRoutes.USERS_PATH).child(userId);
 
 
             Map newPost = new HashMap();
@@ -211,7 +211,6 @@ public class ProfileActivity extends AppCompatActivity {
             dataReference.setValue(newPost);
             uploadImageToFirebaseStorage();
         }
-
 
         if (user != null && profileImageUrl != null) {
             UserProfileChangeRequest profile = new UserProfileChangeRequest.Builder()
