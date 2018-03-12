@@ -20,6 +20,8 @@ public class Anomaly {
     public String id;
     public String encodedImage;
     public Criticality criticality;
+    public double longitude;
+    public double latitude;
 
 
 
@@ -28,10 +30,11 @@ public class Anomaly {
     }
 
 
-    public Anomaly (Bitmap img, Criticality crit){
+    public Anomaly (Bitmap img, Criticality crit,double longitude, double latitude){
         this.encodedImage = encodeImage(img);
         this.criticality = crit;
-
+        this.longitude = longitude;
+        this.latitude = latitude;
     }
 
     private String encodeImage(Bitmap img){
