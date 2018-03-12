@@ -162,7 +162,7 @@ public class GeolocationActivity extends AppCompatActivity implements OnMapReady
         {
             String userId = user.getUid();
 
-            DatabaseReference ref = database.getReference("easyups/Users").child(userId).child("poi");
+            DatabaseReference ref = database.getReference(BDDRoutes.USERS_PATH).child(userId).child("poi");
             ref.addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
@@ -185,11 +185,6 @@ public class GeolocationActivity extends AppCompatActivity implements OnMapReady
                         }
                     }
                     addPoiOnSpinner();
-
-                    if (map != null)
-                    {
-
-                    }
                 }
 
                 @Override
@@ -236,7 +231,7 @@ public class GeolocationActivity extends AppCompatActivity implements OnMapReady
                             public void onClick(DialogInterface dialog, int which) {
                                 map.clear();
                                 String poiName = String.valueOf(poiEditText.getText());
-                                Marker currentMarker = map.addMarker(new MarkerOptions().position(latLng).title("Point d'intérêt " + poiName));
+                                Marker currentMarker = map.addMarker(new MarkerOptions().position(latLng).title(poiName));
                                 currentMarker.showInfoWindow();
                                 map.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 15));
                                 poiSpinner.setEnabled(true);
@@ -257,10 +252,10 @@ public class GeolocationActivity extends AppCompatActivity implements OnMapReady
         if (user != null)
         {
             String userId = user.getUid();
-            String key = database.getReference().child("easyups/Users").child(userId).child("poi").push().getKey();
-            database.getReference().child("easyups/Users").child(userId).child("poi").child(key).child("name").setValue(poiName);
-            database.getReference().child("easyups/Users").child(userId).child("poi").child(key).child("longitude").setValue(latLng.longitude);
-            database.getReference().child("easyups/Users").child(userId).child("poi").child(key).child("latitude").setValue(latLng.latitude);
+            String key = database.getReference().child(BDDRoutes.USERS_PATH).child(userId).child("poi").push().getKey();
+            database.getReference().child(BDDRoutes.USERS_PATH).child(userId).child("poi").child(key).child("name").setValue(poiName);
+            database.getReference().child(BDDRoutes.USERS_PATH).child(userId).child("poi").child(key).child("longitude").setValue(latLng.longitude);
+            database.getReference().child(BDDRoutes.USERS_PATH).child(userId).child("poi").child(key).child("latitude").setValue(latLng.latitude);
         }
     }
 
@@ -274,7 +269,7 @@ public class GeolocationActivity extends AppCompatActivity implements OnMapReady
 
                 if (user != null) {
                     String userId = user.getUid();
-                    database.getReference("easyups/Users").child(userId).child("poi").child(poi.getId()).setValue(null);
+                    database.getReference(BDDRoutes.USERS_PATH).child(userId).child("poi").child(poi.getId()).setValue(null);
                 }
             }
         });
@@ -324,7 +319,7 @@ public class GeolocationActivity extends AppCompatActivity implements OnMapReady
                     if (poi != null) {
                         LatLng latLng = new LatLng(poi.getLatitude(), poi.getLongitude());
                         map.clear();
-                        Marker currentMarker = map.addMarker(new MarkerOptions().position(latLng).title("Point d'intêret " + poi.getName()));
+                        Marker currentMarker = map.addMarker(new MarkerOptions().position(latLng).title(poi.getName()));
                         currentMarker.showInfoWindow();
                         map.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 19));
 
