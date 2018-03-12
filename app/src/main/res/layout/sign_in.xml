@@ -62,7 +62,7 @@
                 android:layout_gravity="center"
                 android:layout_margin="7dp"
 
-                android:text="Login"
+                android:text="S'identifier"
                 android:textAllCaps="false"
                />
 
@@ -71,7 +71,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:padding="15dp"
-                android:text="Don't have account? Sign Up"
+                android:text="Vous n'avez pas de compte? S'inscrire"
                 android:textAlignment="center"
                 android:textAppearance="@style/Base.TextAppearance.AppCompat.Medium"
                 />

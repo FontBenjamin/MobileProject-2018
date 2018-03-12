@@ -43,6 +43,7 @@ import com.iteam.easyups.model.Formation;
 import com.iteam.easyups.model.FormationGroup;
 import com.iteam.easyups.model.User;
 
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -92,12 +93,15 @@ public class ProfileActivity extends AppCompatActivity {
             }
         });
         getFormationByLevel();
-        //loadUserInformation();
+        initFormationSpinner();
+
 
         findViewById(R.id.buttonSave).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 saveUserInformation();
+                startActivity(new Intent(ProfileActivity.this, MainActivity.class));
+
             }
         });
 
@@ -105,11 +109,11 @@ public class ProfileActivity extends AppCompatActivity {
         initFormationSpinner();
     }
 
-    private void initFormationSpinner(){
+    private void initFormationSpinner() {
         edtText.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
-                DataSnapshot data = (DataSnapshot)parentView.getItemAtPosition(position);
+                DataSnapshot data = (DataSnapshot) parentView.getItemAtPosition(position);
                 updateLevelSpinner(data);
             }
 
@@ -123,7 +127,7 @@ public class ProfileActivity extends AppCompatActivity {
         niveauText.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
-                DataSnapshot data = (DataSnapshot)parentView.getItemAtPosition(position);
+                DataSnapshot data = (DataSnapshot) parentView.getItemAtPosition(position);
                 updateFormationSpinner(data);
             }
 
@@ -137,7 +141,7 @@ public class ProfileActivity extends AppCompatActivity {
         intituleText.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
-                Formation formation = (Formation)parentView.getItemAtPosition(position);
+                Formation formation = (Formation) parentView.getItemAtPosition(position);
                 timeTableUrl = formation.timeTableLink;
                 updateGroupSpinner(formation);
             }
@@ -152,7 +156,7 @@ public class ProfileActivity extends AppCompatActivity {
         groupeText.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
-                if(parentView.getItemAtPosition(position) instanceof FormationGroup) {
+                if (parentView.getItemAtPosition(position) instanceof FormationGroup) {
                     FormationGroup group = (FormationGroup) parentView.getItemAtPosition(position);
                     int index = timeTableUrl.lastIndexOf('/');
                     timeTableUrl = timeTableUrl.substring(0, index);
@@ -170,37 +174,10 @@ public class ProfileActivity extends AppCompatActivity {
     }
 
 
-    private void loadUserInformation() {
-        final FirebaseUser user = auth.getCurrentUser();
-
-        if (user != null) {
-
-            String id = user.getUid();
-            FirebaseDatabase database = DatabaseConnection.getDatabase();
-            DatabaseReference ref = database.getReference().child("easyups/Users").child(id);
-            ref.addValueEventListener(new ValueEventListener() {
-                @Override
-                public void onDataChange(DataSnapshot dataSnapshot) {
-                    User user = dataSnapshot.getValue(User.class);
-                    if (user.name != null) {
-                        nameText.setText(user.name);
-                        //getFormationByLevel();
-                        // edtText.setselec(user.EDT);
-                    }
-                }
-
-                @Override
-                public void onCancelled(DatabaseError databaseError) {
-                    System.out.println("The read failed: " + databaseError.getCode());
-                }
-            });
-
-        }
-    }
-
     private void saveUserInformation() {
         String name = nameText.getText().toString();
-        String edt = edtText.getSelectedItem().toString();
+        String intitulé = intituleText.getSelectedItem().toString();
+        String groupe = groupeText.getSelectedItem().toString();
 
         if (name.isEmpty()) {
             nameText.setError("Nom est obligatoire");
@@ -219,8 +196,10 @@ public class ProfileActivity extends AppCompatActivity {
             getFormationByLevel();
 
             Map newPost = new HashMap();
-            newPost.put("Name", name);
-            newPost.put("EDT", edt);
+            newPost.put("name", name);
+            newPost.put("intitulé", intitulé);
+            newPost.put("groupe", groupe);
+            newPost.put("Edt", timeTableUrl);
             dataReference.setValue(newPost);
             uploadImageToFirebaseStorage();
         }
@@ -231,12 +210,15 @@ public class ProfileActivity extends AppCompatActivity {
                     .setPhotoUri(Uri.parse(profileImageUrl))
                     .build();
 
+
             user.updateProfile(profile)
                     .addOnCompleteListener(new OnCompleteListener<Void>() {
+
                         @Override
                         public void onComplete(@NonNull Task<Void> task) {
                             if (task.isSuccessful()) {
-                                Toast.makeText(ProfileActivity.this, "Profile Updated", Toast.LENGTH_SHORT).show();
+
+                                Toast.makeText(ProfileActivity.this, "Profil mis à jour", Toast.LENGTH_SHORT).show();
                             }
                         }
                     });
@@ -286,13 +268,13 @@ public class ProfileActivity extends AppCompatActivity {
     }
 
 
-    public void getFormationByLevel(){
+    public void getFormationByLevel() {
         database.getReference().child(TimetableActivity.FORMATION_PATH).addListenerForSingleValueEvent(
                 new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
 
-                        List<DataSnapshot> levels =  new ArrayList<>();
+                        List<DataSnapshot> levels = new ArrayList<>();
                         for (DataSnapshot dataChild : dataSnapshot.getChildren()) {
                             levels.add(dataChild);
                         }
@@ -301,6 +283,7 @@ public class ProfileActivity extends AppCompatActivity {
                         edtText.setAdapter(adapter);
                         edtText.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
                     }
+
                     @Override
                     public void onCancelled(DatabaseError databaseError) {
 
@@ -310,8 +293,8 @@ public class ProfileActivity extends AppCompatActivity {
 
     }
 
-    public void updateLevelSpinner(DataSnapshot data){
-        List<DataSnapshot> levels =  new ArrayList<>();
+    public void updateLevelSpinner(DataSnapshot data) {
+        List<DataSnapshot> levels = new ArrayList<>();
         for (DataSnapshot dataChild : data.getChildren()) {
             levels.add(dataChild);
         }
@@ -322,15 +305,15 @@ public class ProfileActivity extends AppCompatActivity {
 
     }
 
-    public void updateGroupSpinner(Formation formation){
+    public void updateGroupSpinner(Formation formation) {
         List<FormationGroup> formationGroup;
         ArrayAdapter<?> adapter;
-        if(formation.groupsList == null){
-            adapter =  new ArrayAdapter<String> (mContext,
+        if (formation.groupsList == null) {
+            adapter = new ArrayAdapter<String>(mContext,
                     android.R.layout.simple_spinner_item, Arrays.asList("Aucun groupe pour cette formation"));
-        }else{
-            formationGroup  =  formation.groupsList;
-            adapter =  new ArrayAdapter<FormationGroup> (mContext,
+        } else {
+            formationGroup = formation.groupsList;
+            adapter = new ArrayAdapter<FormationGroup>(mContext,
                     android.R.layout.simple_spinner_item, formationGroup);
         }
 
@@ -358,7 +341,7 @@ public class ProfileActivity extends AppCompatActivity {
         Intent intent = new Intent();
         intent.setType("image/*");
         intent.setAction(Intent.ACTION_GET_CONTENT);
-        startActivityForResult(Intent.createChooser(intent, "Select Profile Image"), CHOOSE_IMAGE);
+        startActivityForResult(Intent.createChooser(intent, "Sélectionnez l'image du profil"), CHOOSE_IMAGE);
     }
 
 

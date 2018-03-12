@@ -20,12 +20,6 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.iteam.easyups.R;
 
 
-/*https://www.simplifiedcoding.net/android-firebase-tutorial-1/
-*https://github.com/probelalkhan/firebase-authentication-tutorial/blob/master/app/src/main/java/net/simplifiedlearning/firebaseauth/SignUpActivity.java
-*https://www.youtube.com/watch?v=mF5MWLsb4cg
-* https://www.youtube.com/watch?v=0NFwF7L-YA8
-*
-* */
 public class SingupActivity extends AppCompatActivity implements View.OnClickListener {
 
     private FirebaseAuth auth;

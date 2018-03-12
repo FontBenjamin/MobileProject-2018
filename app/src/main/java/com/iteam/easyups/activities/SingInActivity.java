@@ -48,7 +48,15 @@ public class SingInActivity extends AppCompatActivity implements View.OnClickLis
         findViewById(R.id.buttonLogin).setOnClickListener(this);
 
     }
+    @Override
+    protected void onStart() {
+        super.onStart();
 
+        if (auth.getCurrentUser() != null) {
+            finish();
+            startActivity(new Intent(this, ProfileActivity.class));
+        }
+    }
     private void userAuth() {
         String email = textEmail.getText().toString().trim();
         String password = textPassword.getText().toString().trim();
@@ -103,9 +111,7 @@ public class SingInActivity extends AppCompatActivity implements View.OnClickLis
         switch (view.getId()) {
             case R.id.textSignup:
                 finish();
-                System.out.print("avant de passer");
                 startActivity(new Intent(this, SingupActivity.class));
-                System.out.print("passer");
                 break;
 
             case R.id.buttonLogin:
