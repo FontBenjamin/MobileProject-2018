@@ -98,7 +98,7 @@ public class MainActivity extends AppCompatActivity
         int id = item.getItemId();
 
         if (id == R.id.nav_anomaly) {
-            // Handle the camera action
+            startActivity(new Intent(MainActivity.this, IncidentActivity.class));
         } else if (id == R.id.nav_edt) {
             if(isNetworkAvailable()){
                getUserEdt();

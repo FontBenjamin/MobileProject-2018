@@ -33,6 +33,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.iteam.easyups.R;
 import com.iteam.easyups.adapter.DataSnapshotSpinnerAdapter;
+import com.iteam.easyups.communication.BDDRoutes;
 import com.iteam.easyups.communication.DatabaseConnection;
 import com.iteam.easyups.model.Formation;
 import com.iteam.easyups.model.FormationGroup;
@@ -52,7 +53,6 @@ public class TimetableActivity extends AppCompatActivity {
     private String[] edtMainPages = {"https://edt.univ-tlse3.fr/FSI/2017_2018/index.html", "https://edt.univ-tlse3.fr/F2SMH/2017_2018/index.html"};
     private String timeTableUrl = "";
     private FirebaseDatabase database = DatabaseConnection.getDatabase();
-    private final static String FORMATION_PATH = "easyups/formations/";
     private Context mContext;
     private TabHost tabHost;
     private ProgressBar progress;
@@ -93,7 +93,7 @@ public class TimetableActivity extends AppCompatActivity {
 
 
     public void getFormationByLevel(){
-        database.getReference().child(FORMATION_PATH).addListenerForSingleValueEvent(
+        database.getReference().child(BDDRoutes.FORMATION_PATH).addListenerForSingleValueEvent(
                 new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
@@ -287,8 +287,8 @@ public class TimetableActivity extends AppCompatActivity {
 
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                if (!dataSnapshot.child(FORMATION_PATH).exists()) {
-                    new HtmlParser( database.getReference().child(FORMATION_PATH)).execute(edtMainPages);
+                if (!dataSnapshot.child(BDDRoutes.FORMATION_PATH).exists()) {
+                    new HtmlParser( database.getReference().child(BDDRoutes.FORMATION_PATH)).execute(edtMainPages);
                 }
             }
 
