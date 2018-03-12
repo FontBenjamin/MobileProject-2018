@@ -23,6 +23,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.iteam.easyups.R;
+import com.iteam.easyups.communication.BDDRoutes;
 import com.iteam.easyups.communication.DatabaseConnection;
 import com.iteam.easyups.model.User;
 
@@ -136,13 +137,13 @@ public class MainActivity extends AppCompatActivity
         //check user is logged in
         if (user != null) {
             String userID = user.getUid();
-            database.getReference().child("easyups/Users").child(userID).addListenerForSingleValueEvent(
+            database.getReference().child(BDDRoutes.USERS_PATH).child(userID).addListenerForSingleValueEvent(
                     new ValueEventListener() {
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot) {
                             User user = dataSnapshot.getValue(User.class);
                             //TODO remove when functionnal
-                            user.setEDT("https://edt.univ-tlse3.fr/F2SMH/2017_2018/L1/L1_STAPS/g223424.xml");
+                            //user.setEDT("https://edt.univ-tlse3.fr/F2SMH/2017_2018/L1/L1_STAPS/g223424.xml");
                             if(user.getEDT() != null){
                                 Intent i = new Intent(MainActivity.this, TimetableWebViewActivity.class);
                                 i.putExtra("timeTableUrl", user.getEDT());

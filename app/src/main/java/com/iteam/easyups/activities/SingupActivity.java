@@ -20,6 +20,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.iteam.easyups.R;
+import com.iteam.easyups.communication.BDDRoutes;
 import com.iteam.easyups.communication.DatabaseConnection;
 
 import java.util.HashMap;
@@ -92,7 +93,7 @@ public class SingupActivity extends AppCompatActivity implements View.OnClickLis
             public void onComplete(@NonNull Task<AuthResult> task) {
                 progressBar.setVisibility(View.GONE);
                 if (task.isSuccessful()) {
-                    DatabaseReference mData= FirebaseDatabase.getInstance().getReference().child("easyups/Users");
+                    DatabaseReference mData= FirebaseDatabase.getInstance().getReference().child(BDDRoutes.USERS_PATH);
                     DatabaseReference currentUserId = mData.child(auth.getCurrentUser().getUid());
                     currentUserId.child("name").setValue("default");
                     finish();

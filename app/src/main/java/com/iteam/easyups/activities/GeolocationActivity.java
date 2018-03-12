@@ -28,6 +28,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.GenericTypeIndicator;
 import com.google.firebase.database.ValueEventListener;
 import com.iteam.easyups.R;
+import com.iteam.easyups.communication.BDDRoutes;
 import com.iteam.easyups.communication.DatabaseConnection;
 import com.iteam.easyups.model.Amphitheater;
 import com.iteam.easyups.model.Building;
@@ -63,7 +64,7 @@ public class GeolocationActivity extends AppCompatActivity implements OnMapReady
             map.setMyLocationEnabled(true);
         }
 
-        DatabaseReference ref = database.getReference("easyups/building");
+        DatabaseReference ref = database.getReference(BDDRoutes.BUILDING_PATH);
         ref.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -110,7 +111,7 @@ public class GeolocationActivity extends AppCompatActivity implements OnMapReady
         }
         else
         {
-            DatabaseReference ref = database.getReference("easyups/amphitheater");
+            DatabaseReference ref = database.getReference(BDDRoutes.AMPHIS_PATH);
             ref.addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
