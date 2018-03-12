@@ -14,6 +14,7 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.iteam.easyups.R;
+import com.iteam.easyups.communication.BDDRoutes;
 import com.iteam.easyups.communication.DatabaseConnection;
 
 import java.util.HashMap;
@@ -95,7 +96,7 @@ public class ProfileActivity extends AppCompatActivity {
 
             String userId =user.getUid();
             FirebaseDatabase data = DatabaseConnection.getDatabase();
-            DatabaseReference dataReference= data.getReference().child("easyups/Users").child(userId);
+            DatabaseReference dataReference= data.getReference().child(BDDRoutes.USERS_PATH).child(userId);
 
             String name = NameText.getText().toString();
             String edt = EdtText.getText().toString();
