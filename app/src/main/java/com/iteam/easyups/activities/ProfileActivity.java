@@ -207,7 +207,7 @@ public class ProfileActivity extends AppCompatActivity {
             newPost.put("name", name);
             newPost.put("intitulé", intitulé);
             newPost.put("groupe", groupe);
-            newPost.put("Edt", timeTableUrl);
+            newPost.put("EDT", timeTableUrl);
             dataReference.setValue(newPost);
             uploadImageToFirebaseStorage();
         }
@@ -277,7 +277,7 @@ public class ProfileActivity extends AppCompatActivity {
 
 
     public void getFormationByLevel() {
-        database.getReference().child(TimetableActivity.FORMATION_PATH).addListenerForSingleValueEvent(
+        database.getReference().child(BDDRoutes.FORMATION_PATH).addListenerForSingleValueEvent(
                 new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
