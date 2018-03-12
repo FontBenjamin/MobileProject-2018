@@ -1,38 +1,11 @@
 package com.iteam.easyups.model;
 
-public class Amphitheater {
+public class Amphitheater extends Place {
 
-    private String name;
-    private Double latitude;
-    private Double longitude;
     private String building;
 
     public Amphitheater() {
-
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public Double getLatitude() {
-        return latitude;
-    }
-
-    public void setLatitude(Double latitude) {
-        this.latitude = latitude;
-    }
-
-    public Double getLongitude() {
-        return longitude;
-    }
-
-    public void setLongitude(Double longitude) {
-        this.longitude = longitude;
+        super();
     }
 
     public String getBuilding() { return building; }

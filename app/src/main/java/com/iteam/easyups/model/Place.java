@@ -1,13 +1,31 @@
 package com.iteam.easyups.model;
 
-public class Building {
+import com.google.firebase.database.Exclude;
+import com.google.firebase.database.IgnoreExtraProperties;
 
+@IgnoreExtraProperties
+public class Place {
+
+    private String id;
     private String name;
     private Double latitude;
     private Double longitude;
 
-    public Building() {
+    public Place() {}
 
+    public Place(String name, Double latitude, Double longitude) {
+        this.name = name;
+        this.latitude = latitude;
+        this.longitude = longitude;
+    }
+
+    @Exclude
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
     }
 
     public String getName() {
