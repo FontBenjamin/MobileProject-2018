@@ -7,19 +7,53 @@
 
     <LinearLayout
         xmlns:android="http://schemas.android.com/apk/res/android"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
         android:orientation="vertical">
 
-        <Spinner
-            android:id="@+id/buildings"
+        <LinearLayout
+            xmlns:android="http://schemas.android.com/apk/res/android"
             android:layout_width="fill_parent"
-            android:layout_height="50dp" />
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:weightSum="2">
 
-        <Spinner
-            android:id="@+id/amphitheaters"
+            <Spinner
+                android:id="@+id/buildings"
+                android:layout_width="wrap_content"
+                android:layout_height="50dp"
+                android:layout_weight="1"/>
+
+            <Spinner
+                android:id="@+id/amphitheaters"
+                android:layout_width="wrap_content"
+                android:layout_height="50dp"
+                android:layout_weight="1"/>
+        </LinearLayout>
+
+        <LinearLayout
+            xmlns:android="http://schemas.android.com/apk/res/android"
             android:layout_width="fill_parent"
-            android:layout_height="50dp" />
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:weightSum="2">
+
+            <Spinner
+                android:id="@+id/poi"
+                android:layout_width="fill_parent"
+                android:layout_height="50dp"
+                android:layout_weight="1"/>
+
+            <Button
+                android:id="@+id/remove_poi"
+                android:layout_height="50dp"
+                android:layout_width="wrap_content"
+                android:text="X"
+                android:textStyle="bold"
+                android:layout_weight="1"
+                android:background="@color/colorPrimary"/>
+        </LinearLayout>
+
 
         <fragment xmlns:android="http://schemas.android.com/apk/res/android"
             xmlns:map="http://schemas.android.com/apk/res-auto"
