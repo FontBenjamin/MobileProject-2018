@@ -15,6 +15,7 @@ import android.content.IntentFilter;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.os.ParcelUuid;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -22,9 +23,12 @@ import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -50,10 +54,15 @@ import com.iteam.easyups.model.Place;
 
 import java.io.DataOutput;
 import java.io.DataOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 public class GeolocationActivity extends AppCompatActivity implements OnMapReadyCallback, AdapterView.OnItemSelectedListener {
 
@@ -74,15 +83,14 @@ public class GeolocationActivity extends AppCompatActivity implements OnMapReady
 
     private FloatingActionButton removePoiButton;
     private FloatingActionButton bluetooth;
-    final DataOutputStream[] os = new DataOutputStream[1];
-
+    BluetoothAdapter bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         context = this;
         setContentView(R.layout.activity_geolocation);
         ApplicationInfo applicationInfo = this.getApplicationInfo();
-        int stringId = applicationInfo.labelRes;
+        final int stringId = applicationInfo.labelRes;
         String result = stringId == 0 ? applicationInfo.nonLocalizedLabel.toString() : this.getString(stringId);
         this.setTitle(result);
         android.support.v7.app.ActionBar actionBar = getSupportActionBar();
@@ -97,20 +105,109 @@ public class GeolocationActivity extends AppCompatActivity implements OnMapReady
                 dialog.setTitle("Bluetooth");
 
                 // set the custom dialog components - text, image and button
-                Button envoyer = dialog.findViewById(R.id.buttonEnvoie);
-                Button recevoir = dialog.findViewById(R.id.buttonRecevoir);
+                final Button envoyer = dialog.findViewById(R.id.buttonEnvoie);
+                final Button recevoir = dialog.findViewById(R.id.buttonRecevoir);
+                final Spinner bluetoothSpinner = dialog.findViewById(R.id.spinnerBluetooth);
+                final TextView spinnerText = dialog.findViewById(R.id.spinnerText);
+                final Button bluetoothOK = dialog.findViewById(R.id.bluetoothOK);
+                final TextView receptionText = dialog.findViewById(R.id.textViewReception);
+                final ProgressBar receptionProgressBar = dialog.findViewById(R.id.progressBarReception);
+                spinnerText.setVisibility(View.INVISIBLE);
+                bluetoothOK.setVisibility(View.INVISIBLE);
+                bluetoothSpinner.setVisibility(View.INVISIBLE);
+                receptionText.setVisibility(View.INVISIBLE);
+                receptionProgressBar.setVisibility(View.INVISIBLE);
 
                 recevoir.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
                         // recevoir le point d'interêt
+                        receptionText.setVisibility(View.VISIBLE);
+                        receptionProgressBar.setVisibility(View.VISIBLE);
+                        envoyer.setEnabled(false);
                     }
                 });
 
-                recevoir.setOnClickListener(new View.OnClickListener() {
+                envoyer.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
+                        recevoir.setEnabled(false);
+
+                        // bluetooth is off, ask user to on it.
+                        if (bluetoothAdapter == null) {
+                            // device doesn't support bluetooth
+                        }
+                        else {
+                            bluetoothSpinner.setVisibility(View.VISIBLE);
+                            spinnerText.setVisibility(View.VISIBLE);
+                            bluetoothOK.setVisibility(View.VISIBLE);
+
+                            // bluetooth is off, ask user to on it.
+                            if(!bluetoothAdapter.isEnabled()) {
+                                Intent enableAdapter = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
+                                startActivityForResult(enableAdapter, 0);
+                            }
+
+                            // Do whatever you want to do with your bluetoothAdapter
+                            Set<BluetoothDevice> bondedDevices = bluetoothAdapter.getBondedDevices();
+                            if (bondedDevices.size() > 0) {
+                                final ArrayList<BluetoothDevice> arrayList = new ArrayList<>();
+                                for(BluetoothDevice b : bondedDevices){
+                                    arrayList.add(b);
+                                }
+                                String[] strings = new String[arrayList.size()];
+                                int i = 0;
+                                for(BluetoothDevice b : arrayList){
+                                    strings[i] = b.getName();
+                                    i++;
+                                }
+                                ArrayAdapter<String> spinnerArrayAdapter = new ArrayAdapter<String>(
+                                        GeolocationActivity.this, android.R.layout.simple_spinner_item, strings);
+                                spinnerArrayAdapter.setDropDownViewResource( android.R.layout.simple_spinner_dropdown_item );
+                                bluetoothSpinner.setAdapter(spinnerArrayAdapter);
+                                bluetoothOK.setOnClickListener(new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View view) {
+                                        BluetoothDevice device = arrayList.get(bluetoothSpinner.getSelectedItemPosition());
+                                        ParcelUuid[] uuids = device.getUuids();
+                                        BluetoothSocket socket = null;
+                                        try {
+                                            socket = device.createRfcommSocketToServiceRecord(uuids[0].getUuid());
+                                            socket.connect();
+                                            OutputStream outputStream = socket.getOutputStream();
+                                            outputStream.write(poiSpinner.getSelectedItem().toString().getBytes());
+                                        } catch (IOException e) {
+                                            e.printStackTrace();
+                                        }
+                                    }
+                                });
+                            }
+
+
+// Spinner spinYear = (Spinner)findViewById(R.id.spin);
+                        }
+
                         // envoyer le point d'interêt
+                       /** BluetoothDevice[] devices = (BluetoothDevice[]) bondedDevices.toArray();
+
+                        BluetoothDevice device = devices[0];
+
+                        ParcelUuid[] uuids = device.getUuids();
+
+                        BluetoothSocket socket = null;
+                        try {
+                            socket = device.createRfcommSocketToServiceRecord(uuids[0].getUuid());
+
+
+                        socket.connect();
+
+                            OutputStream outputStream = socket.getOutputStream();
+
+                            InputStream inStream = socket.getInputStream();
+                            outputStream.write(poiSpinner.getSelectedItem().toString().getBytes());
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }*/
                     }
                 });
 
@@ -394,57 +491,4 @@ public class GeolocationActivity extends AppCompatActivity implements OnMapReady
 
     }
 
-public void sendDataViaBluetooth() {
-
-    final BluetoothAdapter bluetooth = BluetoothAdapter.getDefaultAdapter();
-
-    BroadcastReceiver discoveryResult = new BroadcastReceiver() {
-        public void onReceive(Context context, Intent intent) {
-            String remoteDeviceName = intent.getStringExtra(BluetoothDevice.EXTRA_NAME);
-            BluetoothDevice remoteDevice;
-
-            remoteDevice = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
-
-            Toast.makeText(getApplicationContext(), "Discovered: " + remoteDeviceName + " address " + remoteDevice.getAddress(), Toast.LENGTH_SHORT).show();
-
-            try {
-                BluetoothDevice device = bluetooth.getRemoteDevice(remoteDevice.getAddress());
-
-                Method m = device.getClass().getMethod("createRfcommSocket", new Class[]{int.class});
-
-                BluetoothSocket clientSocket = (BluetoothSocket) m.invoke(device, 1);
-
-                clientSocket.connect();
-
-                os[0] = new DataOutputStream(clientSocket.getOutputStream());
-
-                new ClientSock().start();
-            } catch (Exception e) {
-                e.printStackTrace();
-                Log.e("BLUETOOTH", e.getMessage());
-            }
-        }
-    };
-
-    registerReceiver(discoveryResult, new IntentFilter(BluetoothDevice.ACTION_FOUND));
-
-    bluetooth.enable();
-    if (!bluetooth.isDiscovering()) {
-        bluetooth.startDiscovery();
-    }
-
-
-}
-
-    public class ClientSock extends Thread {
-        public void run() {
-            try {
-                os[0].writeBytes(GeolocationActivity.this.poiSpinner.getSelectedItem().toString()); // anything you want
-                os[0].flush();
-            } catch (Exception e1) {
-                e1.printStackTrace();
-                return;
-            }
-        }
-    }
 }
