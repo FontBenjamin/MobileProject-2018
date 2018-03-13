@@ -11,10 +11,10 @@
         android:layout_height="fill_parent"
         android:orientation="vertical">
 
-        <LinearLayout
-            xmlns:android="http://schemas.android.com/apk/res/android"
+        <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
+            android:background="?attr/colorButtonNormal"
             android:orientation="horizontal"
             android:weightSum="2">
 
@@ -22,37 +22,57 @@
                 android:id="@+id/buildings"
                 android:layout_width="wrap_content"
                 android:layout_height="50dp"
-                android:layout_weight="1"/>
+                android:layout_weight="1" />
 
             <Spinner
                 android:id="@+id/amphitheaters"
                 android:layout_width="wrap_content"
                 android:layout_height="50dp"
-                android:layout_weight="1"/>
+                android:layout_weight="1" />
         </LinearLayout>
 
-        <LinearLayout
-            xmlns:android="http://schemas.android.com/apk/res/android"
-            android:layout_width="fill_parent"
+        <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+            android:id="@+id/linearLayout2"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
+            android:background="?android:attr/colorButtonNormal"
             android:weightSum="2">
 
             <Spinner
                 android:id="@+id/poi"
-                android:layout_width="fill_parent"
-                android:layout_height="50dp"
-                android:layout_weight="1"/>
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@+id/bluetooth"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
 
-            <Button
-                android:id="@+id/remove_poi"
+            <android.support.design.widget.FloatingActionButton
+                android:id="@+id/bluetooth"
+                android:layout_width="50dp"
                 android:layout_height="50dp"
-                android:layout_width="wrap_content"
-                android:text="X"
-                android:textStyle="bold"
-                android:layout_weight="1"
-                android:background="@color/colorPrimary"/>
-        </LinearLayout>
+                android:clickable="true"
+                app:backgroundTint="@android:color/holo_blue_dark"
+                app:layout_constraintBottom_toBottomOf="@+id/remove_poi"
+                app:layout_constraintEnd_toStartOf="@+id/remove_poi"
+                app:layout_constraintStart_toEndOf="@+id/poi"
+                app:layout_constraintTop_toTopOf="@+id/remove_poi"
+                app:layout_constraintVertical_bias="0.0"
+                app:srcCompat="@drawable/bluetooth" />
+
+            <android.support.design.widget.FloatingActionButton
+                android:id="@+id/remove_poi"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:clickable="true"
+                app:backgroundTint="?attr/colorError"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/bluetooth"
+                app:layout_constraintTop_toTopOf="parent"
+                app:srcCompat="@drawable/delete" />
+
+        </android.support.constraint.ConstraintLayout>
 
 
         <fragment xmlns:android="http://schemas.android.com/apk/res/android"
