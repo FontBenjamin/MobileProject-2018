@@ -207,18 +207,22 @@ public class IncidentActivity extends AppCompatActivity {
                 RadioButton radioButton = dialogView.findViewById(selectedId);
 
                 Criticality c = Criticality.COMFORT;
-                switch (radioButton.getText().toString()) {
-                    case "Confort":
-                        c = Criticality.COMFORT;
-                        break;
-                    case "Problème":
-                        c = Criticality.PROBLEM;
-                        break;
-                    case "Danger":
-                        c = Criticality.DANGER;
-                        break;
+                if(radioButton.getText() == null){
+                    Toast.makeText(IncidentActivity.this, "Veuillez selectionner un niveau de criticité", Toast.LENGTH_SHORT).show();
+                }else {
+                    switch (radioButton.getText().toString()) {
+                        case "Confort":
+                            c = Criticality.COMFORT;
+                            break;
+                        case "Problème":
+                            c = Criticality.PROBLEM;
+                            break;
+                        case "Danger":
+                            c = Criticality.DANGER;
+                            break;
+                    }
+                    savePicture(imageBitmap, c);
                 }
-                savePicture(imageBitmap, c);
             }
         });
 
