@@ -71,6 +71,7 @@ public class ProfileActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        auth = FirebaseAuth.getInstance();
         setContentView(R.layout.profile);
         android.support.v7.app.ActionBar actionBar = getSupportActionBar();
         actionBar.setDisplayHomeAsUpEnabled(true);
@@ -79,7 +80,7 @@ public class ProfileActivity extends AppCompatActivity {
         String result = stringId == 0 ? applicationInfo.nonLocalizedLabel.toString() : this.getString(stringId);
         this.setTitle(result);
 
-        auth = FirebaseAuth.getInstance();
+
         mContext = this;
         nameText = findViewById(R.id.pseudo);
         edtText = (Spinner) findViewById(R.id.edtText);
@@ -107,6 +108,15 @@ public class ProfileActivity extends AppCompatActivity {
         });
 
     }
+    @Override
+    protected void onStart() {
+        super.onStart();
+        if (auth.getCurrentUser() == null) {
+            finish();
+            startActivity(new Intent(this, SingupActivity.class));
+        }
+    }
+
 
     public boolean onOptionsItemSelected(MenuItem item){
         finish();
