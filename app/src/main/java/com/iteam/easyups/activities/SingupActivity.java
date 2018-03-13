@@ -48,8 +48,7 @@ public class SingupActivity extends AppCompatActivity implements View.OnClickLis
         emailText = findViewById(R.id.textEmail);
         pswdText = findViewById(R.id.textPassword);
         auth = FirebaseAuth.getInstance();
-
-        auth.signOut();
+        
         findViewById(R.id.buttonSignUp).setOnClickListener(this);
         findViewById(R.id.textLogin).setOnClickListener(this);
     }
