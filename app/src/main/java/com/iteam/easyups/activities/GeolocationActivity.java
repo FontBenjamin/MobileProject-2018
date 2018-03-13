@@ -4,21 +4,28 @@ import android.Manifest;
 import android.app.ActionBar;
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.bluetooth.BluetoothAdapter;
+import android.bluetooth.BluetoothDevice;
+import android.bluetooth.BluetoothSocket;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
+import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -41,6 +48,9 @@ import com.iteam.easyups.communication.BDDRoutes;
 import com.iteam.easyups.communication.DatabaseConnection;
 import com.iteam.easyups.model.Place;
 
+import java.io.DataOutput;
+import java.io.DataOutputStream;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -64,6 +74,7 @@ public class GeolocationActivity extends AppCompatActivity implements OnMapReady
 
     private FloatingActionButton removePoiButton;
     private FloatingActionButton bluetooth;
+    final DataOutputStream[] os = new DataOutputStream[1];
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -242,7 +253,7 @@ public class GeolocationActivity extends AppCompatActivity implements OnMapReady
         else
         {
             poiSpinner.setEnabled(false);
-            Button button = (Button) findViewById(R.id.remove_poi);
+            FloatingActionButton button =  findViewById(R.id.remove_poi);
             button.setEnabled(false);
         }
     }
@@ -383,4 +394,57 @@ public class GeolocationActivity extends AppCompatActivity implements OnMapReady
 
     }
 
+public void sendDataViaBluetooth() {
+
+    final BluetoothAdapter bluetooth = BluetoothAdapter.getDefaultAdapter();
+
+    BroadcastReceiver discoveryResult = new BroadcastReceiver() {
+        public void onReceive(Context context, Intent intent) {
+            String remoteDeviceName = intent.getStringExtra(BluetoothDevice.EXTRA_NAME);
+            BluetoothDevice remoteDevice;
+
+            remoteDevice = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
+
+            Toast.makeText(getApplicationContext(), "Discovered: " + remoteDeviceName + " address " + remoteDevice.getAddress(), Toast.LENGTH_SHORT).show();
+
+            try {
+                BluetoothDevice device = bluetooth.getRemoteDevice(remoteDevice.getAddress());
+
+                Method m = device.getClass().getMethod("createRfcommSocket", new Class[]{int.class});
+
+                BluetoothSocket clientSocket = (BluetoothSocket) m.invoke(device, 1);
+
+                clientSocket.connect();
+
+                os[0] = new DataOutputStream(clientSocket.getOutputStream());
+
+                new ClientSock().start();
+            } catch (Exception e) {
+                e.printStackTrace();
+                Log.e("BLUETOOTH", e.getMessage());
+            }
+        }
+    };
+
+    registerReceiver(discoveryResult, new IntentFilter(BluetoothDevice.ACTION_FOUND));
+
+    bluetooth.enable();
+    if (!bluetooth.isDiscovering()) {
+        bluetooth.startDiscovery();
+    }
+
+
+}
+
+    public class ClientSock extends Thread {
+        public void run() {
+            try {
+                os[0].writeBytes(GeolocationActivity.this.poiSpinner.getSelectedItem().toString()); // anything you want
+                os[0].flush();
+            } catch (Exception e1) {
+                e1.printStackTrace();
+                return;
+            }
+        }
+    }
 }
