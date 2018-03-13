@@ -55,7 +55,6 @@ public class HtmlParser extends AsyncTask<String, Void, Void> {
     private void getEdtLinks(String sUrl){
         for (Element link : getHtmlElements(sUrl, edtBaseQuery)) {
             String xmlLink  = link.attr("value").replace(".html", ".xml");
-            //Log.e("TEXT : ", "- " + link.text() + " " + xmlLink);
             List<FormationGroup> groups = getEdtGroupsLinks(xmlLink);
             Formation formation = new Formation(link.text(), xmlLink, groups);
             formations.add(formation);
@@ -68,7 +67,6 @@ public class HtmlParser extends AsyncTask<String, Void, Void> {
         for (Element link : getHtmlElements(url, edtGroupQuery)) {
             if(link.select("name") != null && link.select("link[href]") != null){
                 groups.add(new FormationGroup(link.select("name").text(),  link.select("link[href]").attr("href")));
-               // Log.e("TEXT : ", "--- " + link.select("name").text() + " " + link.select("link[href]").attr("href"));
             }
         }
 

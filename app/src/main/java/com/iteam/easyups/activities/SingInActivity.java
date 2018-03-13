@@ -6,8 +6,6 @@ import android.content.pm.ApplicationInfo;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.util.Patterns;
 import android.view.MenuItem;
 import android.view.View;
@@ -19,14 +17,7 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.internal.FederatedSignInActivity;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 import com.iteam.easyups.R;
-import com.iteam.easyups.communication.DatabaseConnection;
-
-import java.util.HashMap;
-import java.util.Map;
 
 public class SingInActivity extends AppCompatActivity implements View.OnClickListener {
 
@@ -45,10 +36,9 @@ public class SingInActivity extends AppCompatActivity implements View.OnClickLis
         int stringId = applicationInfo.labelRes;
         String result = stringId == 0 ? applicationInfo.nonLocalizedLabel.toString() : this.getString(stringId);
         this.setTitle(result);
+
         auth = FirebaseAuth.getInstance();
-
         textEmail = (EditText) findViewById(R.id.textEmail);
-
         textPassword = (EditText) findViewById(R.id.textPassword);
         bar = (ProgressBar) findViewById(R.id.progressbar);
 
@@ -71,6 +61,9 @@ public class SingInActivity extends AppCompatActivity implements View.OnClickLis
         return true;
     }
 
+    /**
+     * Check the user information for connection
+     */
     private void userAuth() {
         String email = textEmail.getText().toString().trim();
         String password = textPassword.getText().toString().trim();

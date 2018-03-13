@@ -1,7 +1,6 @@
 package com.iteam.easyups.activities;
 
 import android.Manifest;
-import android.app.ActionBar;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.bluetooth.BluetoothAdapter;
@@ -48,7 +47,6 @@ import com.iteam.easyups.communication.BDDRoutes;
 import com.iteam.easyups.communication.DatabaseConnection;
 import com.iteam.easyups.model.Place;
 
-import java.io.DataOutput;
 import java.io.DataOutputStream;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -154,7 +152,7 @@ public class GeolocationActivity extends AppCompatActivity implements OnMapReady
         createPoiOnMap();
     }
 
-    public void buildingManagement()
+    private void buildingManagement()
     {
         DatabaseReference ref = database.getReference(BDDRoutes.BUILDING_PATH);
         ref.addValueEventListener(new ValueEventListener() {
@@ -172,7 +170,7 @@ public class GeolocationActivity extends AppCompatActivity implements OnMapReady
         });
     }
 
-    public void addBuildingsOnSpinner()
+    private void addBuildingsOnSpinner()
     {
         Place place = new Place();
         place.setName("Bâtiments");
@@ -182,7 +180,7 @@ public class GeolocationActivity extends AppCompatActivity implements OnMapReady
         buildingSpinner.setAdapter(dataAdapter);
     }
 
-    public void amphitheaterManagement()
+    private void amphitheaterManagement()
     {
         DatabaseReference ref = database.getReference(BDDRoutes.AMPHIS_PATH);
         ref.addValueEventListener(new ValueEventListener() {
@@ -201,7 +199,7 @@ public class GeolocationActivity extends AppCompatActivity implements OnMapReady
     }
 
 
-    public void addAmphitheatersOnSpinner()
+    private void addAmphitheatersOnSpinner()
     {
         Place place = new Place();
         place.setName("Amphis");
@@ -211,7 +209,7 @@ public class GeolocationActivity extends AppCompatActivity implements OnMapReady
         amphitheaterSpinner.setAdapter(dataAdapter);
     }
 
-    public void poiManagement()
+    private void poiManagement()
     {
         final FirebaseUser user = auth.getCurrentUser();
 
@@ -258,7 +256,7 @@ public class GeolocationActivity extends AppCompatActivity implements OnMapReady
         }
     }
 
-    public void addPoiOnSpinner()
+    private void addPoiOnSpinner()
     {
         Place place = new Place();
         place.setName("Centres d'intérêt");
@@ -273,7 +271,7 @@ public class GeolocationActivity extends AppCompatActivity implements OnMapReady
         poiSpinner.setAdapter(dataAdapter);
     }
 
-    public void createPoiOnMap()
+    private void createPoiOnMap()
     {
         map.setOnMapLongClickListener(new GoogleMap.OnMapLongClickListener() {
             @Override
@@ -302,7 +300,7 @@ public class GeolocationActivity extends AppCompatActivity implements OnMapReady
         });
     }
 
-    public void savePoi(LatLng latLng, String poiName)
+    private void savePoi(LatLng latLng, String poiName)
     {
         final FirebaseUser user = auth.getCurrentUser();
 
@@ -316,7 +314,7 @@ public class GeolocationActivity extends AppCompatActivity implements OnMapReady
         }
     }
 
-    public void removePoi()
+    private void removePoi()
     {
         removePoiButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
@@ -394,7 +392,7 @@ public class GeolocationActivity extends AppCompatActivity implements OnMapReady
 
     }
 
-public void sendDataViaBluetooth() {
+    private void sendDataViaBluetooth() {
 
     final BluetoothAdapter bluetooth = BluetoothAdapter.getDefaultAdapter();
 

@@ -10,7 +10,7 @@ public class User {
 
 
     public String name;
-    public String EDT;
+    public String timetableLink;
     @Exclude
     public String id;
 
@@ -19,11 +19,17 @@ public class User {
 
     }
 
-
-    public User(String name, String EDT) {
+    public User(String name, String timetableLink) {
         this.name = name;
-        this.EDT = EDT;
+        this.timetableLink = timetableLink;
     }
 
 
+    public String getName() {
+        return name;
+    }
+
+    public String getTimetableLink() {
+        return timetableLink;
+    }
 }

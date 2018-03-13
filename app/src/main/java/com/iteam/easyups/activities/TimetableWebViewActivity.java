@@ -5,7 +5,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -15,7 +14,6 @@ import android.webkit.WebResourceRequest;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.ProgressBar;
-import android.widget.TabHost;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -29,7 +27,7 @@ public class TimetableWebViewActivity extends AppCompatActivity {
     private Context mContext;
     private WebView webView;
     private ProgressBar progress;
-    private TextView text;
+    private TextView loadingTxt;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,11 +38,13 @@ public class TimetableWebViewActivity extends AppCompatActivity {
         webView = (WebView) findViewById(R.id.webview);
         progress = findViewById(R.id.progressBarEDT);
         progress.bringToFront();
-        text = findViewById(R.id.textViewEDT);
-        text.bringToFront();
+        loadingTxt = findViewById(R.id.textViewEDT);
+        loadingTxt.bringToFront();
         mContext = this;
+
+        //Retrieve the timetable link to display
         Intent i = getIntent();
-        displayEdt(i.getStringExtra("timeTableUrl"));
+        displayTimetable(i.getStringExtra("timeTableUrl"));
         webView.getSettings().setBuiltInZoomControls(true);
     }
 
@@ -67,8 +67,11 @@ public class TimetableWebViewActivity extends AppCompatActivity {
         }
     }
 
-    private void displayEdt(String timeTableUrl) {
-        Log.e("TIMETABLE ", timeTableUrl);
+    /**
+     * Resolve http request and display its result
+     * @param timeTableUrl the http address
+     */
+    private void displayTimetable(String timeTableUrl) {
         webView.setWebViewClient(new WebViewClient() {
             @Override
             public void onReceivedError(WebView view, int errorCode, String description, String failingUrl) {
@@ -86,11 +89,10 @@ public class TimetableWebViewActivity extends AppCompatActivity {
             @Override
             public void onPageFinished(WebView view, String url) {
                 progress.setVisibility(View.INVISIBLE);
-                text.setVisibility(View.INVISIBLE);
+                loadingTxt.setVisibility(View.INVISIBLE);
             }
 
         });
-
         webView.loadUrl(timeTableUrl);
 
     }

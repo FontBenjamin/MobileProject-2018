@@ -2,24 +2,18 @@ package com.iteam.easyups.activities;
 
 
 import android.Manifest;
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-
-import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
-import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
-import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
-import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
@@ -36,10 +30,9 @@ import com.iteam.easyups.communication.BDDRoutes;
 import com.iteam.easyups.communication.DatabaseConnection;
 import com.iteam.easyups.model.Anomaly;
 import com.iteam.easyups.model.Criticality;
-import com.iteam.easyups.utils.GPSTracker;
+import com.iteam.easyups.utils.AlertMessage;
+import com.iteam.easyups.utils.Util;
 import com.theartofdev.edmodo.cropper.CropImageView;
-
-import java.security.Permission;
 
 /**
  * Created by Marianna on 09/03/2018.
@@ -50,9 +43,34 @@ public class IncidentActivity extends AppCompatActivity {
     static final int REQUEST_IMAGE_CAPTURE = 1;
     private CropImageView mImageView;
     private FirebaseDatabase database = DatabaseConnection.getDatabase();
-    private Button buttonEnvoi;
+    private Button sendBtn;
     private double longitude;
     private double latitude;
+    private LocationManager locationManager;
+    private Context mContext;
+
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        requestPermissionCamera();
+        setContentView(R.layout.incident_layout);
+        android.support.v7.app.ActionBar actionBar = getSupportActionBar();
+        actionBar.setDisplayHomeAsUpEnabled(true);
+
+        mContext = this;
+        mImageView = findViewById(R.id.imagePicture);
+        sendBtn = findViewById(R.id.buttonEnvoieAnomalie);
+        sendBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                chooseCriticity(IncidentActivity.this.mImageView.getCroppedImage());
+            }
+        });
+
+
+    }
+
     private final LocationListener locationListener = new LocationListener() {
         public void onLocationChanged(Location location) {
             longitude = location.getLongitude();
@@ -71,46 +89,24 @@ public class IncidentActivity extends AppCompatActivity {
         public void onProviderDisabled(String s) {
         }
     };
-    private LocationManager locationManager;
 
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
-            requestPermissionCamera();
-        } else {
-            dispatchTakePictureIntent();
-        }
-        setContentView(R.layout.incident_layout);
-        android.support.v7.app.ActionBar actionBar = getSupportActionBar();
-        actionBar.setDisplayHomeAsUpEnabled(true);
-        mImageView = findViewById(R.id.imagePicture);
-        buttonEnvoi = findViewById(R.id.buttonEnvoieAnomalie);
-        buttonEnvoi.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                chooseCriticity(IncidentActivity.this.mImageView.getCroppedImage());
-            }
-        });
-
-
-    }
-
-
-    void requestPermissionGPS() {
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
-                != PackageManager.PERMISSION_GRANTED) {
+    /**
+     * Check the GPS permission
+     */
+    private void requestPermissionGPS() {
+        if (!Util.requestPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)) {
             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 0);
         } else {
             dispatchGPSEvent();
         }
     }
 
-
-    void requestPermissionCamera() {
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA)
-                != PackageManager.PERMISSION_GRANTED) {
+    /**
+     * Check the Camera permission
+     */
+    private void requestPermissionCamera() {
+        if (!Util.requestPermission(this,  Manifest.permission.CAMERA)) {
             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.CAMERA}, 1);
         } else {
             dispatchTakePictureIntent();
@@ -122,15 +118,13 @@ public class IncidentActivity extends AppCompatActivity {
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         if (requestCode == 0) {
-            if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
-                    == PackageManager.PERMISSION_GRANTED) {
+            if (Util.requestPermission(this,  Manifest.permission.ACCESS_FINE_LOCATION)) {
                 dispatchGPSEvent();
             } else {
                 finish();
             }
         } else {
-            if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA)
-                    == PackageManager.PERMISSION_GRANTED) {
+            if (Util.requestPermission(this, Manifest.permission.CAMERA)) {
                 dispatchTakePictureIntent();
             } else {
                 finish();
@@ -138,6 +132,9 @@ public class IncidentActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * Get the localisation information
+     */
     private void dispatchGPSEvent() {
         this.locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
         Location location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
@@ -149,9 +146,7 @@ public class IncidentActivity extends AppCompatActivity {
 
     private void dispatchTakePictureIntent() {
         Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-        //if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
         startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
-        //}
     }
 
     @Override
@@ -160,17 +155,17 @@ public class IncidentActivity extends AppCompatActivity {
             Bundle extras = data.getExtras();
             Bitmap imageBitmap = (Bitmap) extras.get("data");
             mImageView.setImageBitmap(imageBitmap);
-            if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-                requestPermissionGPS();
-            } else {
-                dispatchGPSEvent();
-            }
+            requestPermissionGPS();
         }else{
             finish();
         }
     }
 
-
+    /**
+     * Insert the picture in db
+     * @param imageBitmap The picture with the box of important element
+     * @param criticality The level of criticality
+     */
     private void savePicture(Bitmap imageBitmap, Criticality criticality) {
         Anomaly anomaly = new Anomaly(imageBitmap, criticality, longitude, latitude);
         anomaly.id = database.getReference().push().getKey();
@@ -178,7 +173,11 @@ public class IncidentActivity extends AppCompatActivity {
         finish();
     }
 
-    public void chooseCriticity(final Bitmap imageBitmap) {
+    /**
+     * Popup to get the level of criticality
+     * @param imageBitmap The taken picture
+     */
+    private void chooseCriticity(final Bitmap imageBitmap) {
         final AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(this);
 
         dialogBuilder.setTitle("Choisir le niveau de criticité");
@@ -193,7 +192,6 @@ public class IncidentActivity extends AppCompatActivity {
             button.setText(crit.getLabel());
             radioGroup.addView(button);
         }
-
         dialogBuilder.setNegativeButton("Annuler", new DialogInterface.OnClickListener() {
 
             public void onClick(DialogInterface dialog, int WhichButton) {
@@ -208,22 +206,27 @@ public class IncidentActivity extends AppCompatActivity {
                 // find the radiobutton by returned id
                 RadioButton radioButton = dialogView.findViewById(selectedId);
 
-                Criticality c = Criticality.COMFORT;
+                Criticality crit = Criticality.COMFORT;
                 if(radioButton == null){
                     Toast.makeText(IncidentActivity.this, "Veuillez selectionner un niveau de criticité", Toast.LENGTH_SHORT).show();
                 }else {
                     switch (radioButton.getText().toString()) {
                         case "Confort":
-                            c = Criticality.COMFORT;
+                            crit = Criticality.COMFORT;
                             break;
                         case "Problème":
-                            c = Criticality.PROBLEM;
+                            crit = Criticality.PROBLEM;
                             break;
                         case "Danger":
-                            c = Criticality.DANGER;
+                            crit = Criticality.DANGER;
                             break;
                     }
-                    savePicture(imageBitmap, c);
+                    if(Util.isNetworkAvailable(mContext)){
+                        savePicture(imageBitmap, crit);
+                    }else{
+                        Util.displayErrorAlert(AlertMessage.ERROR_TYPE, AlertMessage.NETWORK_ERROR, mContext);
+                    }
+
                 }
             }
         });

@@ -8,7 +8,6 @@ import com.google.firebase.database.Exclude;
 import com.google.firebase.database.IgnoreExtraProperties;
 
 import java.io.ByteArrayOutputStream;
-import java.util.List;
 
 /**
  * Created by Marianna on 11/03/2018.

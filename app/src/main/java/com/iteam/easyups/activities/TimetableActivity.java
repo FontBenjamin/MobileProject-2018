@@ -4,14 +4,10 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Gravity;
-import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,11 +20,8 @@ import android.widget.Spinner;
 import android.widget.TabHost;
 import android.widget.TextView;
 
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.iteam.easyups.R;
@@ -37,8 +30,9 @@ import com.iteam.easyups.communication.BDDRoutes;
 import com.iteam.easyups.communication.DatabaseConnection;
 import com.iteam.easyups.model.Formation;
 import com.iteam.easyups.model.FormationGroup;
-import com.iteam.easyups.model.User;
+import com.iteam.easyups.utils.AlertMessage;
 import com.iteam.easyups.utils.HtmlParser;
+import com.iteam.easyups.utils.Util;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -66,13 +60,15 @@ public class TimetableActivity extends AppCompatActivity {
         mContext = this;
         android.support.v7.app.ActionBar actionBar = getSupportActionBar();
         actionBar.setDisplayHomeAsUpEnabled(true);
-        if(isNetworkAvailable()){
+        if(Util.isNetworkAvailable(this)){
             saveAllFormation();
+        }else{
+            Util.displayErrorAlert(AlertMessage.ERROR_TYPE, AlertMessage.NETWORK_ERROR, this);
         }
+
         initSearchFormation();
-
-
     }
+
 
     public boolean onOptionsItemSelected(MenuItem item){
         finish();
@@ -88,16 +84,11 @@ public class TimetableActivity extends AppCompatActivity {
     }
 
 
-
-    private boolean isNetworkAvailable() {
-        ConnectivityManager connectivityManager
-                = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
-        return activeNetworkInfo != null && activeNetworkInfo.isConnected();
-    }
-
-
-    public void getFormationByLevel(){
+    /**
+     * Create the tab for each component (FSI,F2SMH)
+     * and retrieve formation from db
+     */
+    private void getFormationByLevel(){
         database.getReference().child(BDDRoutes.FORMATION_PATH).addListenerForSingleValueEvent(
                 new ValueEventListener() {
                     @Override
@@ -125,8 +116,8 @@ public class TimetableActivity extends AppCompatActivity {
     }
 
     /**
-     * Create the main view of a tab
-     * @param data the department (FSI, F2SMH)
+     * Create the main view of a tab composed of level (L1...M2), formation title and group
+     * @param data the component (FSI, F2SMH)
      * @return the new view
      */
     @SuppressLint("ResourceAsColor")
@@ -137,6 +128,7 @@ public class TimetableActivity extends AppCompatActivity {
         final Spinner spinnerGroup = new Spinner(mContext);
 
         spinnerGroup.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            //When a group is selected, we update the timetable link
             @Override
             public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
                 if(parentView.getItemAtPosition(position) instanceof FormationGroup) {
@@ -149,12 +141,14 @@ public class TimetableActivity extends AppCompatActivity {
 
             @Override
             public void onNothingSelected(AdapterView<?> parentView) {
-                // your code here
+                //TODO
             }
 
         });
 
+
         spinnerFormation.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            //When an item of a spinner formation is selected, we update the groups according to the selected formation
             @Override
             public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
                 Formation formation = (Formation)parentView.getItemAtPosition(position);
@@ -165,12 +159,13 @@ public class TimetableActivity extends AppCompatActivity {
 
             @Override
             public void onNothingSelected(AdapterView<?> parentView) {
-                // your code here
+                //TODO
             }
 
         });
 
         spinnerLevel.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            //When an item of a spinner level (L1...M2) is selected, we update the formation available for the selected level
             @Override
             public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
                 DataSnapshot data = (DataSnapshot)parentView.getItemAtPosition(position);
@@ -179,7 +174,7 @@ public class TimetableActivity extends AppCompatActivity {
 
             @Override
             public void onNothingSelected(AdapterView<?> parentView) {
-                // your code here
+                //TODO
             }
 
         });
@@ -187,13 +182,7 @@ public class TimetableActivity extends AppCompatActivity {
 
         Button confirmButton = new Button(mContext);
         confirmButton.setText("Go !");
-        confirmButton.setTextColor(Color.WHITE);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
-            confirmButton.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
-        }
-        confirmButton.setBackgroundColor(Color.argb(255,192,11,18));
-        confirmButton.setGravity(Gravity.BOTTOM);
-        confirmButton.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+        initButtonStyle(confirmButton);
         confirmButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -230,7 +219,22 @@ public class TimetableActivity extends AppCompatActivity {
         return linearLayout;
     }
 
-    public Spinner initLevelSpinner(DataSnapshot data){
+    private void initButtonStyle(Button button){
+        button.setTextColor(Color.WHITE);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+            button.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
+        }
+        button.setBackgroundColor(Color.argb(255,192,11,18));
+        button.setGravity(Gravity.BOTTOM);
+        button.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+    }
+
+    /**
+     * Create the spinner to display level (L1...M2) from db
+     * @param data the component (FSI, F2SMH)
+     * @return the spinner created
+     */
+    private Spinner initLevelSpinner(DataSnapshot data){
         Spinner spinner = new Spinner(mContext);
         List<DataSnapshot> levels =  new ArrayList<>();
         for (DataSnapshot dataChild : data.getChildren()) {
@@ -243,7 +247,12 @@ public class TimetableActivity extends AppCompatActivity {
         return spinner;
     }
 
-    public void updateFormationSpinner(final Spinner spinnerFormationTitle, DataSnapshot data){
+    /**
+     * Update the information in the formation title spinner according to the selected level
+     * @param spinnerFormationTitle the spinner to update
+     * @param data the selected level (L1...M2)
+     */
+    private void updateFormationSpinner(final Spinner spinnerFormationTitle, DataSnapshot data){
         List<Formation> formations =  new ArrayList<>();
         for(DataSnapshot dataFormation : data.getChildren()){
             formations.add(dataFormation.getValue(Formation.class));
@@ -257,7 +266,12 @@ public class TimetableActivity extends AppCompatActivity {
         spinnerFormationTitle.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
     }
 
-    public void updateGroupSpinner(final Spinner spinnerGroup, Formation formation){
+    /**
+     * Update the information in the group spinner according to the selected formation
+     * @param spinnerGroup The spinner to update
+     * @param formation The selected formation
+     */
+    private void updateGroupSpinner(final Spinner spinnerGroup, Formation formation){
         List<FormationGroup> formationGroup;
         ArrayAdapter<?> adapter;
         if(formation.groupsList == null){
@@ -275,7 +289,7 @@ public class TimetableActivity extends AppCompatActivity {
         spinnerGroup.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
     }
 
-    public LinearLayout initTabLayout(){
+    private LinearLayout initTabLayout(){
         LinearLayout linearLayout = new LinearLayout(mContext);
         linearLayout.setGravity(Gravity.TOP);
         linearLayout.setOrientation(LinearLayout.VERTICAL);
@@ -286,7 +300,10 @@ public class TimetableActivity extends AppCompatActivity {
     }
 
 
-    public void saveAllFormation(){
+    /**
+     * Populate formation in database if they don't are stored yet
+     */
+    private void saveAllFormation(){
         database.getReference().addListenerForSingleValueEvent(new ValueEventListener() {
 
 

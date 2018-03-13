@@ -4,17 +4,11 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ApplicationInfo;
 import android.graphics.Bitmap;
-import android.content.Context;
-import android.content.Intent;
-import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
-import android.provider.MediaStore;
-import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
@@ -49,8 +43,6 @@ import com.iteam.easyups.communication.BDDRoutes;
 import com.iteam.easyups.communication.DatabaseConnection;
 import com.iteam.easyups.model.Formation;
 import com.iteam.easyups.model.FormationGroup;
-import com.iteam.easyups.model.User;
-
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -66,7 +58,6 @@ import java.util.Map;
 public class ProfileActivity extends AppCompatActivity {
     private static final int CHOOSE_IMAGE = 101;
 
-    private TextView textView;
     private ImageView imageView;
     private EditText nameText;
     private String timeTableUrl = "";
@@ -82,14 +73,15 @@ public class ProfileActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.profile);
+        android.support.v7.app.ActionBar actionBar = getSupportActionBar();
+        actionBar.setDisplayHomeAsUpEnabled(true);
         ApplicationInfo applicationInfo = this.getApplicationInfo();
         int stringId = applicationInfo.labelRes;
         String result = stringId == 0 ? applicationInfo.nonLocalizedLabel.toString() : this.getString(stringId);
         this.setTitle(result);
+
         auth = FirebaseAuth.getInstance();
         mContext = this;
-        android.support.v7.app.ActionBar actionBar = getSupportActionBar();
-        actionBar.setDisplayHomeAsUpEnabled(true);
         nameText = findViewById(R.id.pseudo);
         edtText = (Spinner) findViewById(R.id.edtText);
         niveauText = (Spinner) findViewById(R.id.niveauText);
@@ -97,7 +89,6 @@ public class ProfileActivity extends AppCompatActivity {
         groupeText = (Spinner) findViewById(R.id.groupeText);
         imageView = findViewById(R.id.imageView);
         progressBar = findViewById(R.id.progressbar);
-        //textView = findViewById(R.id.textVerified);
 
         imageView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -108,8 +99,6 @@ public class ProfileActivity extends AppCompatActivity {
         getFormationByLevel();
         initFormationSpinner();
 
-        //loadUserInformation();
-
         findViewById(R.id.buttonSave).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -119,8 +108,6 @@ public class ProfileActivity extends AppCompatActivity {
             }
         });
 
-
-        initFormationSpinner();
     }
 
     public boolean onOptionsItemSelected(MenuItem item){
@@ -138,7 +125,7 @@ public class ProfileActivity extends AppCompatActivity {
 
             @Override
             public void onNothingSelected(AdapterView<?> parentView) {
-                // your code here
+                //TODO
             }
 
         });
@@ -152,7 +139,7 @@ public class ProfileActivity extends AppCompatActivity {
 
             @Override
             public void onNothingSelected(AdapterView<?> parentView) {
-                // your code here
+                //TODO
             }
 
         });
@@ -167,7 +154,7 @@ public class ProfileActivity extends AppCompatActivity {
 
             @Override
             public void onNothingSelected(AdapterView<?> parentView) {
-                // your code here
+                //TODO
             }
 
         });
@@ -185,18 +172,21 @@ public class ProfileActivity extends AppCompatActivity {
 
             @Override
             public void onNothingSelected(AdapterView<?> parentView) {
-                // your code here
+                //TODO
             }
 
         });
 
     }
 
-
+    /**
+     * Save the user profile in db
+     */
     private void saveUserInformation() {
         String name = nameText.getText().toString();
-        String intitulé = intituleText.getSelectedItem().toString();
+        String intitule = intituleText.getSelectedItem().toString();
         String groupe = groupeText.getSelectedItem().toString();
+        FirebaseUser user = auth.getCurrentUser();
 
         if (name.isEmpty()) {
             nameText.setError("Nom est obligatoire");
@@ -204,43 +194,34 @@ public class ProfileActivity extends AppCompatActivity {
             return;
         }
 
-
-        FirebaseUser user = auth.getCurrentUser();
-
         if (user != null) {
-
             String userId = user.getUid();
-            FirebaseDatabase data = DatabaseConnection.getDatabase();
-
-            DatabaseReference dataReference = data.getReference().child(BDDRoutes.USERS_PATH).child(userId);
-
+            DatabaseReference dataReference = database.getReference().child(BDDRoutes.USERS_PATH).child(userId);
 
             Map newPost = new HashMap();
             newPost.put("name", name);
-            newPost.put("intitulé", intitulé);
+            newPost.put("intitulé", intitule);
             newPost.put("groupe", groupe);
             newPost.put("EDT", timeTableUrl);
             dataReference.setValue(newPost);
             uploadImageToFirebaseStorage();
-        }
 
-        if (user != null && profileImageUrl != null) {
-            UserProfileChangeRequest profile = new UserProfileChangeRequest.Builder()
-                    .setPhotoUri(Uri.parse(profileImageUrl))
-                    .build();
+            if(profileImageUrl != null){
+                UserProfileChangeRequest profile = new UserProfileChangeRequest.Builder()
+                        .setPhotoUri(Uri.parse(profileImageUrl))
+                        .build();
 
 
-            user.updateProfile(profile)
-                    .addOnCompleteListener(new OnCompleteListener<Void>() {
-
-                        @Override
-                        public void onComplete(@NonNull Task<Void> task) {
-                            if (task.isSuccessful()) {
-
-                                Toast.makeText(ProfileActivity.this, "Profil mis à jour", Toast.LENGTH_SHORT).show();
+                user.updateProfile(profile)
+                        .addOnCompleteListener(new OnCompleteListener<Void>() {
+                            @Override
+                            public void onComplete(@NonNull Task<Void> task) {
+                                if (task.isSuccessful()) {
+                                    Toast.makeText(ProfileActivity.this, "Profil mis à jour", Toast.LENGTH_SHORT).show();
+                                }
                             }
-                        }
-                    });
+                        });
+            }
         }
     }
 
@@ -287,7 +268,7 @@ public class ProfileActivity extends AppCompatActivity {
     }
 
 
-    public void getFormationByLevel() {
+    private void getFormationByLevel() {
         database.getReference().child(BDDRoutes.FORMATION_PATH).addListenerForSingleValueEvent(
                 new ValueEventListener() {
                     @Override
@@ -312,7 +293,7 @@ public class ProfileActivity extends AppCompatActivity {
 
     }
 
-    public void updateLevelSpinner(DataSnapshot data) {
+    private void updateLevelSpinner(DataSnapshot data) {
         List<DataSnapshot> levels = new ArrayList<>();
         for (DataSnapshot dataChild : data.getChildren()) {
             levels.add(dataChild);
@@ -324,7 +305,7 @@ public class ProfileActivity extends AppCompatActivity {
 
     }
 
-    public void updateGroupSpinner(Formation formation) {
+    private void updateGroupSpinner(Formation formation) {
         List<FormationGroup> formationGroup;
         ArrayAdapter<?> adapter;
         if (formation.groupsList == null) {
@@ -342,7 +323,7 @@ public class ProfileActivity extends AppCompatActivity {
         groupeText.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
     }
 
-    public void updateFormationSpinner(DataSnapshot data) {
+    private void updateFormationSpinner(DataSnapshot data) {
         List<Formation> formations = new ArrayList<>();
         for (DataSnapshot dataFormation : data.getChildren()) {
             formations.add(dataFormation.getValue(Formation.class));
