@@ -9,6 +9,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.util.Patterns;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ProgressBar;
@@ -38,6 +39,8 @@ public class SingInActivity extends AppCompatActivity implements View.OnClickLis
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.sign_in);
+        android.support.v7.app.ActionBar actionBar = getSupportActionBar();
+        actionBar.setDisplayHomeAsUpEnabled(true);
         ApplicationInfo applicationInfo = this.getApplicationInfo();
         int stringId = applicationInfo.labelRes;
         String result = stringId == 0 ? applicationInfo.nonLocalizedLabel.toString() : this.getString(stringId);
@@ -62,6 +65,12 @@ public class SingInActivity extends AppCompatActivity implements View.OnClickLis
             finish();
         }
     }
+
+    public boolean onOptionsItemSelected(MenuItem item){
+        finish();
+        return true;
+    }
+
     private void userAuth() {
         String email = textEmail.getText().toString().trim();
         String password = textPassword.getText().toString().trim();

@@ -15,6 +15,7 @@ import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -87,7 +88,8 @@ public class ProfileActivity extends AppCompatActivity {
         this.setTitle(result);
         auth = FirebaseAuth.getInstance();
         mContext = this;
-
+        android.support.v7.app.ActionBar actionBar = getSupportActionBar();
+        actionBar.setDisplayHomeAsUpEnabled(true);
         nameText = findViewById(R.id.pseudo);
         edtText = (Spinner) findViewById(R.id.edtText);
         niveauText = (Spinner) findViewById(R.id.niveauText);
@@ -119,6 +121,11 @@ public class ProfileActivity extends AppCompatActivity {
 
 
         initFormationSpinner();
+    }
+
+    public boolean onOptionsItemSelected(MenuItem item){
+        finish();
+        return true;
     }
 
     private void initFormationSpinner() {

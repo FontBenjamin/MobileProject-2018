@@ -15,6 +15,7 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CompoundButton;
@@ -53,7 +54,8 @@ public class InformationActivity extends AppCompatActivity{
         mContext = this;
         tabHost = (TabHost)findViewById(R.id.tab_informations);
         tabHost.setup();
-
+        android.support.v7.app.ActionBar actionBar = getSupportActionBar();
+        actionBar.setDisplayHomeAsUpEnabled(true);
         TabHost.TabSpec tabAbout = tabHost.newTabSpec("A propos");
         TabHost.TabSpec tabGeneral = tabHost.newTabSpec("Informations générales");
 
@@ -103,7 +105,10 @@ public class InformationActivity extends AppCompatActivity{
         }
     }
 
-
+    public boolean onOptionsItemSelected(MenuItem item){
+        finish();
+        return true;
+    }
 
     private void updateSoundLevel(){
         Thread t = new Thread() {

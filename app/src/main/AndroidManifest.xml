@@ -16,6 +16,8 @@
     <uses-feature android:name="android.hardware.camera" />
     <uses-feature android:name="android.hardware.camera.autofocus" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.BLUETOOTH" />
+    <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
 
     <application
         android:allowBackup="true"
@@ -90,8 +92,7 @@
 
         <activity
             android:name=".activities.GeolocationActivity"
-            android:label="GeolocationActivity"
-            android:theme="@style/AppTheme.NoActionBar">
+            android:label="GeolocationActivity">
         </activity>
 
         <meta-data

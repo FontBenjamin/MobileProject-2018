@@ -22,6 +22,7 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
@@ -82,7 +83,8 @@ public class IncidentActivity extends AppCompatActivity {
             dispatchTakePictureIntent();
         }
         setContentView(R.layout.incident_layout);
-
+        android.support.v7.app.ActionBar actionBar = getSupportActionBar();
+        actionBar.setDisplayHomeAsUpEnabled(true);
         mImageView = findViewById(R.id.imagePicture);
         buttonEnvoi = findViewById(R.id.buttonEnvoieAnomalie);
         buttonEnvoi.setOnClickListener(new View.OnClickListener() {
@@ -230,6 +232,9 @@ public class IncidentActivity extends AppCompatActivity {
         AlertDialog alertDialog = dialogBuilder.create();
         alertDialog.show();
     }
-
+    public boolean onOptionsItemSelected(MenuItem item){
+        finish();
+        return true;
+    }
 
 }

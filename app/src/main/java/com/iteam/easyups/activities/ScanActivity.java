@@ -17,6 +17,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Base64;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 import android.webkit.URLUtil;
 import android.widget.ImageView;
@@ -73,7 +74,8 @@ public class ScanActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_scan);
-
+        android.support.v7.app.ActionBar actionBar = getSupportActionBar();
+        actionBar.setDisplayHomeAsUpEnabled(true);
         imageQRCode = findViewById(R.id.imageViewQRCode);
         textQRCode = findViewById(R.id.textViewQRCode);
         progressBar = findViewById(R.id.progressBarWaitScan);
@@ -190,6 +192,10 @@ public class ScanActivity extends AppCompatActivity {
         pauseScanner();
     }
 
+    public boolean onOptionsItemSelected(MenuItem item){
+        finish();
+        return true;
+    }
 
     void requestPermission() {
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA)

@@ -1,14 +1,19 @@
 package com.iteam.easyups.activities;
 
 import android.Manifest;
+import android.app.ActionBar;
 import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
+import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
@@ -65,8 +70,42 @@ public class GeolocationActivity extends AppCompatActivity implements OnMapReady
         super.onCreate(savedInstanceState);
         context = this;
         setContentView(R.layout.activity_geolocation);
-
+        ApplicationInfo applicationInfo = this.getApplicationInfo();
+        int stringId = applicationInfo.labelRes;
+        String result = stringId == 0 ? applicationInfo.nonLocalizedLabel.toString() : this.getString(stringId);
+        this.setTitle(result);
+        android.support.v7.app.ActionBar actionBar = getSupportActionBar();
+        actionBar.setDisplayHomeAsUpEnabled(true);
         buildingSpinner = (Spinner) findViewById(R.id.buildings);
+        bluetooth = findViewById(R.id.bluetooth);
+        bluetooth.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                final Dialog dialog = new Dialog(context);
+                dialog.setContentView(R.layout.bluetooth_question);
+                dialog.setTitle("Bluetooth");
+
+                // set the custom dialog components - text, image and button
+                Button envoyer = dialog.findViewById(R.id.buttonEnvoie);
+                Button recevoir = dialog.findViewById(R.id.buttonRecevoir);
+
+                recevoir.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        // recevoir le point d'interêt
+                    }
+                });
+
+                recevoir.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        // envoyer le point d'interêt
+                    }
+                });
+
+                dialog.show();
+            }
+        });
         buildingSpinner.setOnItemSelectedListener(this);
         amphitheaterSpinner = (Spinner) findViewById(R.id.amphitheaters);
         amphitheaterSpinner.setOnItemSelectedListener(this);
@@ -82,6 +121,11 @@ public class GeolocationActivity extends AppCompatActivity implements OnMapReady
 
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
+    }
+
+    public boolean onOptionsItemSelected(MenuItem item){
+        finish();
+        return true;
     }
 
     @Override

@@ -64,7 +64,8 @@ public class TimetableActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.edt_layout);
         mContext = this;
-
+        android.support.v7.app.ActionBar actionBar = getSupportActionBar();
+        actionBar.setDisplayHomeAsUpEnabled(true);
         if(isNetworkAvailable()){
             saveAllFormation();
         }
@@ -73,6 +74,10 @@ public class TimetableActivity extends AppCompatActivity {
 
     }
 
+    public boolean onOptionsItemSelected(MenuItem item){
+        finish();
+        return true;
+    }
 
     private void initSearchFormation(){
         text = findViewById(R.id.textViewSpinners);

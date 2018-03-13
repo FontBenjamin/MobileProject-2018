@@ -35,6 +35,8 @@ public class TimetableWebViewActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.webview_layout);
+        android.support.v7.app.ActionBar actionBar = getSupportActionBar();
+        actionBar.setDisplayHomeAsUpEnabled(true);
         webView = (WebView) findViewById(R.id.webview);
         progress = findViewById(R.id.progressBarEDT);
         progress.bringToFront();
@@ -60,6 +62,7 @@ public class TimetableWebViewActivity extends AppCompatActivity {
                 startActivity(new Intent(TimetableWebViewActivity.this, TimetableActivity.class));
                 return true;
             default:
+                finish();
                 return super.onOptionsItemSelected(item);
         }
     }
