@@ -86,10 +86,11 @@ public class ScanActivity extends AppCompatActivity {
                                     new ValueEventListener() {
                                         @Override
                                         public void onDataChange(DataSnapshot dataSnapshot) {
-
-                                                // for (final DataSnapshot data : dataSnapshot.getChildren()) {
+                                            String textData;
                                                 // we print the object, image or text
-                                                String textData = dataSnapshot.getValue().toString();
+                                            if( dataSnapshot.getValue() != null) {
+                                                 textData = dataSnapshot.getValue().toString();
+
                                                 // if the string is an image
                                                 if (textData.substring(0, 6).equals("image/")) {
                                                     try {
@@ -110,9 +111,11 @@ public class ScanActivity extends AppCompatActivity {
                                                     textQRCode.setVisibility(View.VISIBLE);
                                                     textQRCode.setText(textData);
                                                 }
-                                            
+
+                                         }else{
+                                                displayErrorScanMsg();
+                                            }
                                         }
-                                        //}
                                         @Override
                                         public void onCancelled(DatabaseError databaseError) {
 
@@ -121,11 +124,7 @@ public class ScanActivity extends AppCompatActivity {
 
                             );
                         }catch(Exception e){
-                                imageQRCode.setVisibility(View.INVISIBLE);
-                                textViewWaitScan.setVisibility(View.INVISIBLE);
-                                progressBar.setVisibility(View.INVISIBLE);
-                                textQRCode.setVisibility(View.VISIBLE);
-                                textQRCode.setText("Erreur de scan : ce QR code n'est pas relié à la base de données de l'université.");
+                                displayErrorScanMsg();
                             }
                         }
                     }
@@ -136,6 +135,14 @@ public class ScanActivity extends AppCompatActivity {
 
             }
         });
+    }
+
+    private void displayErrorScanMsg(){
+        imageQRCode.setVisibility(View.INVISIBLE);
+        textViewWaitScan.setVisibility(View.INVISIBLE);
+        progressBar.setVisibility(View.INVISIBLE);
+        textQRCode.setVisibility(View.VISIBLE);
+        textQRCode.setText("Erreur de scan : ce QR code n'est pas relié à la base de données de l'université.");
     }
 
     @Override
