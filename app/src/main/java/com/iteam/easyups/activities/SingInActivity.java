@@ -58,8 +58,8 @@ public class SingInActivity extends AppCompatActivity implements View.OnClickLis
         super.onStart();
 
         if (auth.getCurrentUser() != null) {
-            finish();
             startActivity(new Intent(this, ProfileActivity.class));
+            finish();
         }
     }
     private void userAuth() {
@@ -98,10 +98,10 @@ public class SingInActivity extends AppCompatActivity implements View.OnClickLis
                 bar.setVisibility(View.GONE);
                 if (task.isSuccessful()) {
 
-                    finish();
                     Intent intent = new Intent(SingInActivity.this, ProfileActivity.class);
                     intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                     startActivity(intent);
+                    finish();
                 } else {
                     Toast.makeText(getApplicationContext(), task.getException().getMessage(), Toast.LENGTH_SHORT).show();
                 }
@@ -115,8 +115,8 @@ public class SingInActivity extends AppCompatActivity implements View.OnClickLis
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.textSignup:
-                finish();
                 startActivity(new Intent(this, SingupActivity.class));
+                finish();
                 break;
 
             case R.id.buttonLogin:

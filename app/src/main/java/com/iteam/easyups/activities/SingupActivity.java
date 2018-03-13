@@ -94,8 +94,8 @@ public class SingupActivity extends AppCompatActivity implements View.OnClickLis
                     DatabaseReference mData= FirebaseDatabase.getInstance().getReference().child(BDDRoutes.USERS_PATH);
                     DatabaseReference currentUserId = mData.child(auth.getCurrentUser().getUid());
                     currentUserId.child("name").setValue("default");
-                    finish();
                     startActivity(new Intent(SingupActivity.this, SingInActivity.class));
+                    finish();
                 } else {
 
                     if (task.getException() instanceof FirebaseAuthUserCollisionException) {
@@ -118,8 +118,8 @@ public class SingupActivity extends AppCompatActivity implements View.OnClickLis
                 break;
 
             case R.id.textLogin:
-                finish();
                 startActivity(new Intent(this, SingInActivity.class));
+                finish();
                 break;
         }
     }
