@@ -7,8 +7,12 @@
 
     <TextView
         android:layout_width="match_parent"
-        android:layout_height="30dp"
-        android:text=" Appuyez sur l'appareil photo pour choisir votre photo de profile"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:text="Appuyez sur l'icone pour choisir votre photo de profil"
+        android:textAlignment="center"
         android:textAppearance="@style/TextAppearance.AppCompat" />
 
     <RelativeLayout
@@ -22,7 +26,7 @@
             android:layout_alignParentBottom="true"
             android:layout_centerHorizontal="true"
             android:layout_marginBottom="14dp"
-            android:background="@drawable/camera"
+            android:background="@drawable/photo_camera"
             android:scaleType="centerCrop" />
 
         <ProgressBar
@@ -38,7 +42,8 @@
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Nom" />
+        android:text="Nom"
+        android:textStyle="bold" />
 
     <EditText
         android:id="@+id/pseudo"
@@ -49,7 +54,8 @@
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Faculté" />
+        android:text="Faculté"
+        android:textStyle="bold" />
 
     <Spinner
         android:id="@+id/edtText"
@@ -60,7 +66,8 @@
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Niveau" />
+        android:text="Niveau"
+        android:textStyle="bold" />
 
     <Spinner
         android:id="@+id/niveauText"
@@ -70,7 +77,8 @@
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Intitulé" />
+        android:text="Intitulé"
+        android:textStyle="bold" />
 
     <Spinner
         android:id="@+id/intituleText"
@@ -81,7 +89,8 @@
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Groupe" />
+        android:text="Groupe"
+        android:textStyle="bold" />
 
     <Spinner
         android:id="@+id/groupeText"
@@ -90,9 +99,11 @@
 
     <Button
         android:id="@+id/buttonSave"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
+        android:layout_marginLeft="8dp"
+        android:layout_marginRight="8dp"
         android:layout_marginTop="25dp"
         android:background="@color/colorPrimary"
         android:paddingLeft="55dp"

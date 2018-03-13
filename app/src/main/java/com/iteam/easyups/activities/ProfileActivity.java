@@ -2,6 +2,7 @@ package com.iteam.easyups.activities;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.ApplicationInfo;
 import android.graphics.Bitmap;
 import android.content.Context;
 import android.content.Intent;
@@ -80,6 +81,10 @@ public class ProfileActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.profile);
+        ApplicationInfo applicationInfo = this.getApplicationInfo();
+        int stringId = applicationInfo.labelRes;
+        String result = stringId == 0 ? applicationInfo.nonLocalizedLabel.toString() : this.getString(stringId);
+        this.setTitle(result);
         auth = FirebaseAuth.getInstance();
         mContext = this;
 

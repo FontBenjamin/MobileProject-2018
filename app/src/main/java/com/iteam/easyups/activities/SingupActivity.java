@@ -2,10 +2,12 @@ package com.iteam.easyups.activities;
 
 
 import android.content.Intent;
+import android.content.pm.ApplicationInfo;
 import android.os.Bundle;
 
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.util.Patterns;
 import android.view.View;
 import android.widget.EditText;
@@ -39,12 +41,14 @@ public class SingupActivity extends AppCompatActivity implements View.OnClickLis
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.sign_up);
-
         progressBar = findViewById(R.id.progressbar);
         emailText = findViewById(R.id.textEmail);
         pswdText = findViewById(R.id.textPassword);
         auth = FirebaseAuth.getInstance();
-
+        ApplicationInfo applicationInfo = this.getApplicationInfo();
+        int stringId = applicationInfo.labelRes;
+        String result = stringId == 0 ? applicationInfo.nonLocalizedLabel.toString() : this.getString(stringId);
+        this.setTitle(result);
         findViewById(R.id.buttonSignUp).setOnClickListener(this);
         findViewById(R.id.textLogin).setOnClickListener(this);
     }

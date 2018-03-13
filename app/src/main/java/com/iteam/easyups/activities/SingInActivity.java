@@ -2,9 +2,11 @@ package com.iteam.easyups.activities;
 
 
 import android.content.Intent;
+import android.content.pm.ApplicationInfo;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.util.Patterns;
 import android.view.View;
@@ -36,7 +38,10 @@ public class SingInActivity extends AppCompatActivity implements View.OnClickLis
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.sign_in);
-
+        ApplicationInfo applicationInfo = this.getApplicationInfo();
+        int stringId = applicationInfo.labelRes;
+        String result = stringId == 0 ? applicationInfo.nonLocalizedLabel.toString() : this.getString(stringId);
+        this.setTitle(result);
         auth = FirebaseAuth.getInstance();
 
         textEmail = (EditText) findViewById(R.id.textEmail);
