@@ -1,13 +1,18 @@
 package com.iteam.easyups.activities;
 
+import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.annotation.NonNull;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
@@ -60,17 +65,9 @@ public class InformationActivity extends AppCompatActivity{
         tabHost.addTab(tabAbout);
         tabHost.addTab(tabGeneral);
 
-        try {
-            soundMeter.start();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
 
-        soundLevelTxt = (TextView) findViewById(R.id.sound_level);
-        lightLevelTxt = (TextView) findViewById(R.id.light_level);
+        requestMicrophone();
 
-        updateSoundLevel();
-        getLightLevel();
     }
 
     private void getLightLevel(){
@@ -143,7 +140,45 @@ public class InformationActivity extends AppCompatActivity{
         t.start();
     }
 
+    void requestMicrophone() {
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.RECORD_AUDIO)
+                != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.RECORD_AUDIO}, 0);
+        }else{
+            try {
+                soundMeter.start();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
 
+            soundLevelTxt = (TextView) findViewById(R.id.sound_level);
+            lightLevelTxt = (TextView) findViewById(R.id.light_level);
+            updateSoundLevel();
+            getLightLevel();
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode == 0) {
+            if (ContextCompat.checkSelfPermission(this, Manifest.permission.RECORD_AUDIO)
+                    != PackageManager.PERMISSION_GRANTED) {
+                finish();
+            }else{
+                try {
+                    soundMeter.start();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+
+                soundLevelTxt = (TextView) findViewById(R.id.sound_level);
+                lightLevelTxt = (TextView) findViewById(R.id.light_level);
+                updateSoundLevel();
+                getLightLevel();
+            }
+        }
+    }
 
 
 

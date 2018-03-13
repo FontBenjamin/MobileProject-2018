@@ -12,13 +12,9 @@
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
     <uses-feature android:name="android.hardware.location.gps" />
-
-
     <uses-permission android:name="android.permission.CAMERA" />
-
     <uses-feature android:name="android.hardware.camera" />
     <uses-feature android:name="android.hardware.camera.autofocus" />
-
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
 
     <application
@@ -70,6 +66,11 @@
         <activity
             android:name="com.iteam.easyups.activities.TimetableWebViewActivity"
             android:theme="@style/noAnimTheme"
+            android:configChanges="orientation|screenSize">
+        </activity>
+
+        <activity
+            android:name="com.iteam.easyups.activities.IncidentActivity"
             android:configChanges="orientation|screenSize">
         </activity>
 
