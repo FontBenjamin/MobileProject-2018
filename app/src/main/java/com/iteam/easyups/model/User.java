@@ -11,12 +11,16 @@ public class User {
 
     public String name;
     public String timetableLink;
+    public String formationName;
+    public String groupName;
+
     @Exclude
     public String id;
 
 
     public User() {
-
+        this.name = "";
+        this.timetableLink = "";
     }
 
     public User(String name, String timetableLink) {

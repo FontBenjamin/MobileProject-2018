@@ -19,7 +19,6 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.Spinner;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -31,7 +30,6 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.UserProfileChangeRequest;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
@@ -43,13 +41,12 @@ import com.iteam.easyups.communication.BDDRoutes;
 import com.iteam.easyups.communication.DatabaseConnection;
 import com.iteam.easyups.model.Formation;
 import com.iteam.easyups.model.FormationGroup;
+import com.iteam.easyups.model.User;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
  * Created by sara  on 08/03/2018.
@@ -67,6 +64,8 @@ public class ProfileActivity extends AppCompatActivity {
     private ProgressBar progressBar;
     private String profileImageUrl;
     private FirebaseAuth auth;
+    private Formation formation;
+    private FormationGroup formationGroup;
     private FirebaseDatabase database = DatabaseConnection.getDatabase();
 
     @Override
@@ -147,7 +146,7 @@ public class ProfileActivity extends AppCompatActivity {
         intituleText.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
-                Formation formation = (Formation) parentView.getItemAtPosition(position);
+                formation = (Formation) parentView.getItemAtPosition(position);
                 timeTableUrl = formation.timeTableLink;
                 updateGroupSpinner(formation);
             }
@@ -163,10 +162,10 @@ public class ProfileActivity extends AppCompatActivity {
             @Override
             public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
                 if (parentView.getItemAtPosition(position) instanceof FormationGroup) {
-                    FormationGroup group = (FormationGroup) parentView.getItemAtPosition(position);
+                    formationGroup = (FormationGroup) parentView.getItemAtPosition(position);
                     int index = timeTableUrl.lastIndexOf('/');
                     timeTableUrl = timeTableUrl.substring(0, index);
-                    timeTableUrl += "/" + group.timeTableLink;
+                    timeTableUrl += "/" + formationGroup.timeTableLink;
                 }
             }
 
@@ -183,9 +182,9 @@ public class ProfileActivity extends AppCompatActivity {
      * Save the user profile in db
      */
     private void saveUserInformation() {
-        String name = nameText.getText().toString();
-        String intitule = intituleText.getSelectedItem().toString();
-        String groupe = groupeText.getSelectedItem().toString();
+        final String name = nameText.getText().toString();
+        final String intitule = intituleText.getSelectedItem().toString();
+        final String groupe = groupeText.getSelectedItem().toString();
         FirebaseUser user = auth.getCurrentUser();
 
         if (name.isEmpty()) {
@@ -195,15 +194,26 @@ public class ProfileActivity extends AppCompatActivity {
         }
 
         if (user != null) {
-            String userId = user.getUid();
-            DatabaseReference dataReference = database.getReference().child(BDDRoutes.USERS_PATH).child(userId);
+            final String userId = user.getUid();
 
-            Map newPost = new HashMap();
-            newPost.put("name", name);
-            newPost.put("intitulé", intitule);
-            newPost.put("groupe", groupe);
-            newPost.put("EDT", timeTableUrl);
-            dataReference.setValue(newPost);
+            database.getReference().child(BDDRoutes.USERS_PATH).child(userId).addListenerForSingleValueEvent(
+                    new ValueEventListener() {
+                        @Override
+                        public void onDataChange(DataSnapshot dataSnapshot) {
+                            User user = dataSnapshot.getValue(User.class);
+                            user.name = name;
+                            user.formationName = formation.name;
+                            user.groupName = formationGroup.name;
+                            user.timetableLink = timeTableUrl;
+                            database.getReference().child(BDDRoutes.USERS_PATH).child(userId).setValue(user);
+                        }
+                        @Override
+                        public void onCancelled(DatabaseError databaseError) {
+
+                        }
+                    }
+            );
+
             uploadImageToFirebaseStorage();
 
             if(profileImageUrl != null){

@@ -18,10 +18,11 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthUserCollisionException;
-import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.iteam.easyups.R;
 import com.iteam.easyups.communication.BDDRoutes;
+import com.iteam.easyups.communication.DatabaseConnection;
+import com.iteam.easyups.model.User;
 
 
 public class SingupActivity extends AppCompatActivity implements View.OnClickListener {
@@ -29,7 +30,7 @@ public class SingupActivity extends AppCompatActivity implements View.OnClickLis
     private FirebaseAuth auth;
     ProgressBar progressBar;
     EditText emailText,pswdText;
-
+    private FirebaseDatabase database = DatabaseConnection.getDatabase();
 
 
     @Override
@@ -48,6 +49,7 @@ public class SingupActivity extends AppCompatActivity implements View.OnClickLis
         pswdText = findViewById(R.id.textPassword);
         auth = FirebaseAuth.getInstance();
 
+        auth.signOut();
         findViewById(R.id.buttonSignUp).setOnClickListener(this);
         findViewById(R.id.textLogin).setOnClickListener(this);
     }
@@ -92,9 +94,9 @@ public class SingupActivity extends AppCompatActivity implements View.OnClickLis
             public void onComplete(@NonNull Task<AuthResult> task) {
                 progressBar.setVisibility(View.GONE);
                 if (task.isSuccessful()) {
-                    DatabaseReference mData= FirebaseDatabase.getInstance().getReference().child(BDDRoutes.USERS_PATH);
-                    DatabaseReference currentUserId = mData.child(auth.getCurrentUser().getUid());
-                    currentUserId.child("name").setValue("default");
+                    User user = new User();
+                    user.id = auth.getCurrentUser().getUid();
+                    database.getReference().child(BDDRoutes.USERS_PATH).child(user.id).setValue(user);
                     startActivity(new Intent(SingupActivity.this, SingInActivity.class));
                     finish();
                 } else {

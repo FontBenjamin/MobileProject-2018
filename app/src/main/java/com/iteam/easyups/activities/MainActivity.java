@@ -107,7 +107,7 @@ public class MainActivity extends AppCompatActivity
 
     /**
      * Load directly user timetable if he is loggued in
-     * Otherwize, redirect to the formation choice
+     * Otherwise, redirect to the formation choice
      */
     private void getUserTimetable(){
         final FirebaseUser firebaseUser = auth.getCurrentUser();
