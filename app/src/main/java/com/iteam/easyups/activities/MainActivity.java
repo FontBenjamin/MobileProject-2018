@@ -15,7 +15,16 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
+import android.view.View;
+import android.webkit.WebView;
+import android.webkit.WebViewClient;
+import android.widget.ListView;
 
+import com.daimajia.slider.library.Animations.DescriptionAnimation;
+import com.daimajia.slider.library.SliderLayout;
+import com.daimajia.slider.library.SliderTypes.BaseSliderView;
+import com.daimajia.slider.library.SliderTypes.TextSliderView;
+import com.daimajia.slider.library.Tricks.ViewPagerEx;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -26,25 +35,31 @@ import com.iteam.easyups.R;
 import com.iteam.easyups.communication.DatabaseConnection;
 import com.iteam.easyups.model.User;
 
+import java.util.HashMap;
+
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
     private FirebaseAuth auth;
     private FirebaseDatabase database = DatabaseConnection.getDatabase();
+    private WebView webView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        this.webView = (WebView) findViewById(R.id.webview);
+        this.webView.setWebViewClient(new WebViewClient());
+        this.webView.loadUrl("https://twitter.com/ut3paulsabatier");
+        this.webView.getSettings().setJavaScriptEnabled(true);
+        this.webView.getSettings().setDomStorageEnabled(true);
+
         ApplicationInfo applicationInfo = this.getApplicationInfo();
         int stringId = applicationInfo.labelRes;
         String result = stringId == 0 ? applicationInfo.nonLocalizedLabel.toString() : this.getString(stringId);
         this.setTitle(result);
         auth = FirebaseAuth.getInstance();
 
-        // we set our custom action bar
-        /**ActionBar actionBar = getSupportActionBar();
-        actionBar.setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
-        actionBar.setCustomView(R.layout.statusbar);*/
+
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -57,6 +72,8 @@ public class MainActivity extends AppCompatActivity
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+
+
     }
 
     @Override
@@ -162,4 +179,5 @@ public class MainActivity extends AppCompatActivity
             startActivity(new Intent(MainActivity.this, TimetableActivity.class));
         }
     }
+
 }

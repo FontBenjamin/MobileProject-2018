@@ -8,4 +8,16 @@
     tools:context="com.iteam.easyups.activities.MainActivity"
     tools:showIn="@layout/app_bar_main">
 
+
+    <WebView
+        android:id="@+id/webview"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+    </WebView>
+
 </android.support.constraint.ConstraintLayout>

@@ -12,13 +12,9 @@
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
     <uses-feature android:name="android.hardware.location.gps" />
-
-
     <uses-permission android:name="android.permission.CAMERA" />
-
     <uses-feature android:name="android.hardware.camera" />
     <uses-feature android:name="android.hardware.camera.autofocus" />
-
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
 
     <application
@@ -74,6 +70,11 @@
         </activity>
 
         <activity
+            android:name="com.iteam.easyups.activities.IncidentActivity"
+            android:configChanges="orientation|screenSize">
+        </activity>
+
+        <activity
             android:name="com.iteam.easyups.activities.InformationActivity"
             android:configChanges="orientation|screenSize">
         </activity>
@@ -91,9 +92,6 @@
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="@string/google_maps_key" />
-            android:name="com.iteam.easyups.activities.InformationActivity"></activity>
-        <activity
-            android:name="com.iteam.easyups.activities.IncidentActivity"></activity>
     </application>
 
 </manifest>
