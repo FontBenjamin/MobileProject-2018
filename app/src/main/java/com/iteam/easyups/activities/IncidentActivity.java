@@ -163,6 +163,8 @@ public class IncidentActivity extends AppCompatActivity {
             } else {
                 dispatchGPSEvent();
             }
+        }else{
+            finish();
         }
     }
 
