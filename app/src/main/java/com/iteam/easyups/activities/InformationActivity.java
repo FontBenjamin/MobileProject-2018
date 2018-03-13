@@ -180,6 +180,11 @@ public class InformationActivity extends AppCompatActivity{
         }
     }
 
+    @Override
+    public void onBackPressed(){
+        this.soundMeter.stop();
+        finish();
+    }
 
 
 
