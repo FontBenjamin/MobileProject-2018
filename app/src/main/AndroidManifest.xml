@@ -45,11 +45,13 @@
 
         <activity
             android:name="com.iteam.easyups.activities.SingupActivity"
+            android:screenOrientation="portrait"
             android:label="@string/title_activity_main2">
         </activity>
 
         <activity
             android:name="com.iteam.easyups.activities.SingInActivity"
+            android:screenOrientation="portrait"
             android:label="@string/title_activity_main2">
         </activity>
 
@@ -71,15 +73,18 @@
 
         <activity
             android:name="com.iteam.easyups.activities.IncidentActivity"
+            android:screenOrientation="portrait"
             android:configChanges="orientation|screenSize">
         </activity>
 
         <activity
             android:name="com.iteam.easyups.activities.InformationActivity"
+            android:screenOrientation="portrait"
             android:configChanges="orientation|screenSize">
         </activity>
 
         <activity android:name=".activities.ScanActivity"
+            android:screenOrientation="portrait"
             android:configChanges="orientation|screenSize">
         </activity>
 
