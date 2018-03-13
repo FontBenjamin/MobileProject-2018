@@ -102,7 +102,6 @@ public class ProfileActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 saveUserInformation();
-                startActivity(new Intent(ProfileActivity.this, MainActivity.class));
 
             }
         });
@@ -183,17 +182,12 @@ public class ProfileActivity extends AppCompatActivity {
      */
     private void saveUserInformation() {
         final String name = nameText.getText().toString();
-        final String intitule = intituleText.getSelectedItem().toString();
-        final String groupe = groupeText.getSelectedItem().toString();
         FirebaseUser user = auth.getCurrentUser();
 
         if (name.isEmpty()) {
             nameText.setError("Nom est obligatoire");
             nameText.requestFocus();
-            return;
-        }
-
-        if (user != null) {
+        }else if (user != null) {
             final String userId = user.getUid();
 
             database.getReference().child(BDDRoutes.USERS_PATH).child(userId).addListenerForSingleValueEvent(
@@ -232,6 +226,7 @@ public class ProfileActivity extends AppCompatActivity {
                             }
                         });
             }
+            startActivity(new Intent(ProfileActivity.this, MainActivity.class));
         }
     }
 
