@@ -6,9 +6,7 @@
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
-
     <uses-permission android:name="android.permission.CAMERA" />
-
     <uses-feature android:name="android.hardware.camera" />
     <uses-feature android:name="android.hardware.camera.autofocus" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
@@ -30,6 +28,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+
         <activity
             android:name=".activities.SplashScreenActivity"
             android:theme="@style/SplashTheme"
@@ -49,11 +48,20 @@
         </activity>
 
         <activity
-            android:name="com.iteam.easyups.activities.SingupActivity"></activity>
+            android:name="com.iteam.easyups.activities.SingupActivity"
+            android:label="@string/title_activity_main2">
+        </activity>
+
         <activity
-            android:name="com.iteam.easyups.activities.SingInActivity"></activity>
+            android:name="com.iteam.easyups.activities.SingInActivity"
+            android:label="@string/title_activity_main2">
+        </activity>
+
         <activity
-            android:name="com.iteam.easyups.activities.ProfileActivity"></activity>
+            android:name="com.iteam.easyups.activities.ProfileActivity"
+            android:label="@string/title_activity_main2">
+        </activity>
+
         <activity
             android:name="com.iteam.easyups.activities.TimetableActivity">
             android:configChanges="orientation|screenSize">
@@ -64,6 +72,7 @@
             android:theme="@style/noAnimTheme"
             android:configChanges="orientation|screenSize">
         </activity>
+
         <activity
             android:name="com.iteam.easyups.activities.InformationActivity"
             android:configChanges="orientation|screenSize">
@@ -82,6 +91,7 @@
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="@string/google_maps_key" />
+            android:name="com.iteam.easyups.activities.InformationActivity">
         <activity
             android:name="com.iteam.easyups.activities.IncidentActivity"></activity>
     </application>
