@@ -21,7 +21,7 @@
             <item
                 android:id="@+id/nav_edt"
                 android:icon="@drawable/book"
-                android:title="EDT" />
+                android:title="Emploi du temps" />
             <item
                 android:id="@+id/nav_qrcode"
                 android:icon="@drawable/qrcode"

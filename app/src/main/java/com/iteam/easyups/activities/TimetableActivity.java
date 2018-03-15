@@ -69,7 +69,7 @@ public class TimetableActivity extends AppCompatActivity {
         initSearchFormation();
     }
 
-
+    @Override
     public boolean onOptionsItemSelected(MenuItem item){
         finish();
         return true;
