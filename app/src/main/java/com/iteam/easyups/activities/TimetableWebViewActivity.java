@@ -17,6 +17,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.firebase.auth.FirebaseAuth;
 import com.iteam.easyups.R;
 
 /**
@@ -28,6 +29,7 @@ public class TimetableWebViewActivity extends AppCompatActivity {
     private WebView webView;
     private ProgressBar progress;
     private TextView loadingTxt;
+    private FirebaseAuth auth;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,6 +43,7 @@ public class TimetableWebViewActivity extends AppCompatActivity {
         loadingTxt = findViewById(R.id.textViewEDT);
         loadingTxt.bringToFront();
         mContext = this;
+        auth = FirebaseAuth.getInstance();
 
         //Retrieve the timetable link to display
         Intent i = getIntent();
@@ -59,7 +62,9 @@ public class TimetableWebViewActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.changeEdt:
-                startActivity(new Intent(TimetableWebViewActivity.this, TimetableActivity.class));
+                auth.signOut();
+                startActivity(new Intent(TimetableWebViewActivity.this, MainActivity
+                        .class));
                 return true;
             default:
                 finish();

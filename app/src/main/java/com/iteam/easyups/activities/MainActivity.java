@@ -138,5 +138,15 @@ public class MainActivity extends AppCompatActivity
             startActivity(new Intent(MainActivity.this, TimetableActivity.class));
         }
     }
-
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.changeEdt:
+                auth.signOut();
+                return true;
+            default:
+                finish();
+                return super.onOptionsItemSelected(item);
+        }
+    }
 }

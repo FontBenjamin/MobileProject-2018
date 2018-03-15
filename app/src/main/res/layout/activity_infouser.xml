@@ -69,6 +69,7 @@
                 android:layout_gravity="center"
                 android:layout_margin="7dp"
                 android:background="@color/colorPrimary"
+                android:textColor="@color/white"
                 android:text="Modifier"
                 android:textAllCaps="false" />
             <Button
@@ -78,6 +79,7 @@
                 android:layout_gravity="center"
                 android:layout_margin="7dp"
                 android:background="@color/colorPrimary"
+                android:textColor="@color/white"
                 android:text="Déconnecter"
                 android:textAllCaps="false" />
 
