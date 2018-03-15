@@ -132,7 +132,8 @@ public class GeolocationActivity extends AppCompatActivity implements OnMapReady
                         clientSocket.getRemoteDevice().getAddress()));
 
                 // send a simple message and wait for a response
-                String messageToSend = ((Place)poiSpinner.getSelectedItem()).getName();
+                Place placeToSend = ((Place)poiSpinner.getSelectedItem());
+                String messageToSend = placeToSend.getName()+"|"+placeToSend.getLongitude()+"|"+placeToSend.getLatitude();
                 clientSocket.getOutputStream().write((messageToSend+"\n").getBytes());
                 String message = new BufferedReader(new InputStreamReader(clientSocket.getInputStream())).readLine();
                 System.out.println(String.format("Received message : %s", message));
@@ -238,6 +239,13 @@ public class GeolocationActivity extends AppCompatActivity implements OnMapReady
                                                 System.out.println("**********************************************");
                                                 System.out.println(message);
                                                 System.out.println("**********************************************");
+                                                Place placeToReceive = new Place();
+                                                String[] splited = message.split("\\|+");
+                                                placeToReceive.setName(splited[0]);
+                                                placeToReceive.setLongitude(Double.parseDouble(splited[1]));
+                                                placeToReceive.setLatitude(Double.parseDouble(splited[2]));
+                                                // TODO save poi here
+                                                System.out.println("Place : "+placeToReceive.getName()+" "+placeToReceive.getLongitude()+" "+placeToReceive.getLatitude());
                                                 socket.getOutputStream().write("Hello back, dear Bluetooth server!\n".getBytes());
                                             } catch (IOException e) {
                                                 e.printStackTrace();
@@ -670,5 +678,14 @@ public class GeolocationActivity extends AppCompatActivity implements OnMapReady
     @Override
     public void onNothingSelected(AdapterView<?> parent) {
 
+    }
+
+    @SuppressLint("MissingPermission")
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (Util.requestPermission(this,  Manifest.permission.ACCESS_FINE_LOCATION)) {
+            map.setMyLocationEnabled(true);
+        }
     }
 }
