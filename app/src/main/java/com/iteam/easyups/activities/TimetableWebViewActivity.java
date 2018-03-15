@@ -4,6 +4,7 @@ import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -28,6 +29,7 @@ public class TimetableWebViewActivity extends AppCompatActivity {
     private WebView webView;
     private ProgressBar progress;
     private TextView loadingTxt;
+    private FloatingActionButton changeTimetableButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,6 +41,7 @@ public class TimetableWebViewActivity extends AppCompatActivity {
         progress = findViewById(R.id.progressBarEDT);
         progress.bringToFront();
         loadingTxt = findViewById(R.id.textViewEDT);
+        changeTimetableButton = findViewById(R.id.floatingChangeTimetable);
         loadingTxt.bringToFront();
         mContext = this;
 
@@ -46,6 +49,14 @@ public class TimetableWebViewActivity extends AppCompatActivity {
         Intent i = getIntent();
         displayTimetable(i.getStringExtra("timeTableUrl"));
         webView.getSettings().setBuiltInZoomControls(true);
+
+        changeTimetableButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity(new Intent(TimetableWebViewActivity.this, TimetableActivity.class));
+                finish();
+            }
+        });
     }
 
     @Override
@@ -55,7 +66,7 @@ public class TimetableWebViewActivity extends AppCompatActivity {
         return true;
     }
 
-    @Override
+    /*@Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.changeEdt:
@@ -65,7 +76,7 @@ public class TimetableWebViewActivity extends AppCompatActivity {
                 finish();
                 return super.onOptionsItemSelected(item);
         }
-    }
+    }*/
 
     /**
      * Resolve http request and display its result
