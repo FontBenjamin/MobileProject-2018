@@ -2,8 +2,10 @@ package com.iteam.easyups.activities;
 
 import android.Manifest;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
@@ -104,6 +106,9 @@ public class ScanActivity extends AppCompatActivity {
                                                     } catch (Exception e) {
                                                         Util.displayErrorAlert(AlertMessage.ERROR_TYPE, AlertMessage.IMAGE_PARSING_ERROR, mContext);
                                                     }
+                                                } else if (textData.substring(0,4).equals("http")){
+                                                    Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(textData));
+                                                    startActivity(browserIntent);
                                                 } else {
                                                     imageQRCode.setVisibility(View.INVISIBLE);
                                                     textViewWaitScan.setVisibility(View.INVISIBLE);
