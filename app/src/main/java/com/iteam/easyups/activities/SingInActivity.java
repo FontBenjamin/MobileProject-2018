@@ -17,7 +17,11 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.UserInfo;
 import com.iteam.easyups.R;
+import com.iteam.easyups.communication.BDDRoutes;
+import com.iteam.easyups.model.User;
 
 public class SingInActivity extends AppCompatActivity implements View.OnClickListener {
 
@@ -51,7 +55,7 @@ public class SingInActivity extends AppCompatActivity implements View.OnClickLis
         super.onStart();
 
         if (auth.getCurrentUser() != null) {
-            startActivity(new Intent(this, ProfileActivity.class));
+            startActivity(new Intent(this, UserInfoActivity.class));
             finish();
         }
     }
@@ -100,7 +104,7 @@ public class SingInActivity extends AppCompatActivity implements View.OnClickLis
                 bar.setVisibility(View.GONE);
                 if (task.isSuccessful()) {
 
-                    Intent intent = new Intent(SingInActivity.this, ProfileActivity.class);
+                    Intent intent = new Intent(SingInActivity.this, UserInfoActivity.class);
                     intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                     startActivity(intent);
                     finish();

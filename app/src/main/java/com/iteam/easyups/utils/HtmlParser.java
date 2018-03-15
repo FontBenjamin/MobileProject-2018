@@ -93,8 +93,8 @@ public class HtmlParser extends AsyncTask<String, Void, Void> {
 
 
     public void saveFormation(Formation formation){
-        formation.id = database.push().getKey();
-        database.child(formation.department).child(formation.level).child(formation.id).setValue(formation);
+        formation.setId(database.push().getKey());
+        database.child(formation.getDepartment()).child(formation.getLevel()).child(formation.getId()).setValue(formation);
 
     }
 

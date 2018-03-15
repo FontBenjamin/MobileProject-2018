@@ -9,10 +9,10 @@ import com.google.firebase.database.Exclude;
 public class User {
 
 
-    public String name;
-    public String timetableLink;
-    public String formationName;
-    public String groupName;
+    private String name;
+    private String timetableLink;
+    private String formationName;
+    private String groupName;
 
     @Exclude
     public String id;
@@ -28,12 +28,43 @@ public class User {
         this.timetableLink = timetableLink;
     }
 
-
     public String getName() {
         return name;
     }
 
+    public void setName(String name) {
+        this.name = name;
+    }
+
     public String getTimetableLink() {
         return timetableLink;
+    }
+
+    public void setTimetableLink(String timetableLink) {
+        this.timetableLink = timetableLink;
+    }
+
+    public String getFormationName() {
+        return formationName;
+    }
+
+    public void setFormationName(String formationName) {
+        this.formationName = formationName;
+    }
+
+    public String getGroupName() {
+        return groupName;
+    }
+
+    public void setGroupName(String groupName) {
+        this.groupName = groupName;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
     }
 }

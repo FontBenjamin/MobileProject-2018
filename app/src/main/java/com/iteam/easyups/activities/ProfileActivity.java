@@ -71,6 +71,7 @@ public class ProfileActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        auth = FirebaseAuth.getInstance();
         setContentView(R.layout.profile);
         android.support.v7.app.ActionBar actionBar = getSupportActionBar();
         actionBar.setDisplayHomeAsUpEnabled(true);
@@ -79,7 +80,7 @@ public class ProfileActivity extends AppCompatActivity {
         String result = stringId == 0 ? applicationInfo.nonLocalizedLabel.toString() : this.getString(stringId);
         this.setTitle(result);
 
-        auth = FirebaseAuth.getInstance();
+
         mContext = this;
         nameText = findViewById(R.id.pseudo);
         edtText = (Spinner) findViewById(R.id.edtText);
@@ -107,6 +108,15 @@ public class ProfileActivity extends AppCompatActivity {
         });
 
     }
+    @Override
+    protected void onStart() {
+        super.onStart();
+        if (auth.getCurrentUser() == null) {
+            finish();
+            startActivity(new Intent(this, SingupActivity.class));
+        }
+    }
+
 
     public boolean onOptionsItemSelected(MenuItem item){
         finish();
@@ -146,7 +156,7 @@ public class ProfileActivity extends AppCompatActivity {
             @Override
             public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
                 formation = (Formation) parentView.getItemAtPosition(position);
-                timeTableUrl = formation.timeTableLink;
+                timeTableUrl = formation.getTimeTableLink();
                 updateGroupSpinner(formation);
             }
 
@@ -164,7 +174,7 @@ public class ProfileActivity extends AppCompatActivity {
                     formationGroup = (FormationGroup) parentView.getItemAtPosition(position);
                     int index = timeTableUrl.lastIndexOf('/');
                     timeTableUrl = timeTableUrl.substring(0, index);
-                    timeTableUrl += "/" + formationGroup.timeTableLink;
+                    timeTableUrl += "/" + formationGroup.getTimeTableLink();
                 }
             }
 
@@ -195,10 +205,10 @@ public class ProfileActivity extends AppCompatActivity {
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot) {
                             User user = dataSnapshot.getValue(User.class);
-                            user.name = name;
-                            user.formationName = formation.name;
-                            user.groupName = formationGroup.name;
-                            user.timetableLink = timeTableUrl;
+                            user.setName(name);
+                            user.setFormationName(formation.getName());
+                            user.setGroupName(formationGroup.getName());
+                            user.setTimetableLink(timeTableUrl);
                             database.getReference().child(BDDRoutes.USERS_PATH).child(userId).setValue(user);
                         }
                         @Override
@@ -313,11 +323,11 @@ public class ProfileActivity extends AppCompatActivity {
     private void updateGroupSpinner(Formation formation) {
         List<FormationGroup> formationGroup;
         ArrayAdapter<?> adapter;
-        if (formation.groupsList == null) {
+        if (formation.getGroupsList() == null) {
             adapter = new ArrayAdapter<String>(mContext,
                     android.R.layout.simple_spinner_item, Arrays.asList("Aucun groupe pour cette formation"));
         } else {
-            formationGroup = formation.groupsList;
+            formationGroup = formation.getGroupsList();
             adapter = new ArrayAdapter<FormationGroup>(mContext,
                     android.R.layout.simple_spinner_item, formationGroup);
         }
