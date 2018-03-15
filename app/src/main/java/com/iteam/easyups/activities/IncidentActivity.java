@@ -2,6 +2,7 @@ package com.iteam.easyups.activities;
 
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -135,6 +136,7 @@ public class IncidentActivity extends AppCompatActivity {
     /**
      * Get the localisation information
      */
+    @SuppressLint("MissingPermission")
     private void dispatchGPSEvent() {
         this.locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
         Location location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);

@@ -414,6 +414,7 @@ public class GeolocationActivity extends AppCompatActivity implements OnMapReady
         ref.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
+                buildingList.clear();
                 GenericTypeIndicator<List<Place>> genericTypeIndicator = new GenericTypeIndicator<List<Place>>(){};
                 buildingList.addAll(dataSnapshot.getValue(genericTypeIndicator));
                 addBuildingsOnSpinner();
@@ -448,6 +449,7 @@ public class GeolocationActivity extends AppCompatActivity implements OnMapReady
         ref.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
+                amphitheaterList.clear();
                 GenericTypeIndicator<List<Place>> genericTypeIndicator = new GenericTypeIndicator<List<Place>>(){};
                 amphitheaterList.addAll(dataSnapshot.getValue(genericTypeIndicator));
                 addAmphitheatersOnSpinner();
@@ -560,7 +562,6 @@ public class GeolocationActivity extends AppCompatActivity implements OnMapReady
                                 map.clear();
                                 String poiName = String.valueOf(poiEditText.getText());
                                 Marker currentMarker = map.addMarker(new MarkerOptions().position(latLng).title(poiName));
-                                currentMarker.showInfoWindow();
                                 map.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 15));
                                 poiSpinner.setEnabled(true);
                                 savePoi(latLng, poiName);
@@ -618,14 +619,13 @@ public class GeolocationActivity extends AppCompatActivity implements OnMapReady
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
         switch (parent.getId()) {
             case R.id.buildings:
+                map.clear();
                 if (position != 0)
                 {
                     Place building = (Place) parent.getItemAtPosition(position);
                     if (building != null) {
                         LatLng latLng = new LatLng(building.getLatitude(), building.getLongitude());
-                        map.clear();
                         Marker currentMarker = map.addMarker(new MarkerOptions().position(latLng).title("Bâtiment " + building.getName()));
-                        currentMarker.showInfoWindow();
                         map.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 19));
 
                         poiSpinner.setSelection(0);
@@ -635,14 +635,13 @@ public class GeolocationActivity extends AppCompatActivity implements OnMapReady
                 }
                 break;
             case R.id.amphitheaters:
+                map.clear();
                 if (position != 0)
                 {
                     Place amphitheater = (Place) parent.getItemAtPosition(position);
                     if (amphitheater != null) {
                         LatLng latLng = new LatLng(amphitheater.getLatitude(), amphitheater.getLongitude());
-                        map.clear();
                         Marker currentMarker = map.addMarker(new MarkerOptions().position(latLng).title("Amphi " + amphitheater.getName()));
-                        currentMarker.showInfoWindow();
                         map.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 19));
 
                         buildingSpinner.setSelection(0);
@@ -652,14 +651,13 @@ public class GeolocationActivity extends AppCompatActivity implements OnMapReady
                 }
                 break;
             case R.id.poi:
+                map.clear();
                 if (position != 0)
                 {
                     Place poi = (Place) parent.getItemAtPosition(position);
                     if (poi != null) {
                         LatLng latLng = new LatLng(poi.getLatitude(), poi.getLongitude());
-                        map.clear();
                         Marker currentMarker = map.addMarker(new MarkerOptions().position(latLng).title(poi.getName()));
-                        currentMarker.showInfoWindow();
                         map.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 19));
 
                         buildingSpinner.setSelection(0);
