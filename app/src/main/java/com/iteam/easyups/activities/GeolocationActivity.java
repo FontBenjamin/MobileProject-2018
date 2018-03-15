@@ -6,6 +6,7 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
+import android.bluetooth.BluetoothServerSocket;
 import android.bluetooth.BluetoothSocket;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -15,6 +16,7 @@ import android.content.IntentFilter;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.os.Handler;
 import android.os.ParcelUuid;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.content.ContextCompat;
@@ -52,29 +54,38 @@ import com.iteam.easyups.communication.BDDRoutes;
 import com.iteam.easyups.communication.DatabaseConnection;
 import com.iteam.easyups.model.Place;
 
+import java.io.BufferedReader;
 import java.io.DataOutput;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.lang.reflect.Method;
+import java.sql.SQLOutput;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.UUID;
 
 public class GeolocationActivity extends AppCompatActivity implements OnMapReadyCallback, AdapterView.OnItemSelectedListener {
 
     private FirebaseDatabase database = DatabaseConnection.getDatabase();
     private FirebaseAuth auth = FirebaseAuth.getInstance();
-
+    private boolean waitThreadRunning = false;
     private Context context;
-
+    private BluetoothServerSocket mServerSocket;
+    // in `MainActivity` class...
+    public static final String SERVICE_PINGPONG_NAME = "BLUETOOTH PINGPONG M2 DL";
+    // we will derivate the UUID from the name of our service
+    public static final UUID SERVICE_PINGPONG_UUID =
+            UUID.nameUUIDFromBytes(SERVICE_PINGPONG_NAME.getBytes());
     private final List<Place> buildingList = new ArrayList<>();
     private final List<Place> amphitheaterList = new ArrayList<>();
     private final List<Place> poiList = new ArrayList<>();
-
+    private static final UUID MY_UUID = UUID.fromString("00001101-0000-1000-8000-00805F9B34FB");
     private GoogleMap map;
 
     private Spinner buildingSpinner;
@@ -84,6 +95,57 @@ public class GeolocationActivity extends AppCompatActivity implements OnMapReady
     private FloatingActionButton removePoiButton;
     private FloatingActionButton bluetooth;
     BluetoothAdapter bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+    private BluetoothAdapter mBluetoothAdapter;
+    private ArrayList<BluetoothDevice> mVisibleDevices = new ArrayList<>();
+    private final BroadcastReceiver mReceiver = new BroadcastReceiver() {
+        // this method is called each time there is a new event on which we subscribed
+        public void onReceive(Context context, Intent intent) {
+            String action = intent.getAction();
+            if (BluetoothDevice.ACTION_FOUND.equals(action)) {
+
+                // get the BluetoothDevice object and its info from the Intent
+                BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
+
+                // add it if not a duplicate
+                if (!mVisibleDevices.contains(device)) {
+                    mVisibleDevices.add(device);
+
+                    // we will define this method later, create a stub for now
+                }
+            }
+        }
+    };
+    private BluetoothDevice mmDevice;
+    private Runnable mListenThread = new Runnable() {
+        @Override
+        public void run() {
+            try {
+                System.out.println("Waiting for a client connection...");
+
+                // wait for a client...
+                BluetoothSocket clientSocket = mServerSocket.accept();
+                System.out.println(String.format("Connected to %s (%s)",
+                        clientSocket.getRemoteDevice().getName(),
+                        clientSocket.getRemoteDevice().getAddress()));
+
+                // send a simple message and wait for a response
+                String messageToSend = ((Place)poiSpinner.getSelectedItem()).getName();
+                clientSocket.getOutputStream().write((messageToSend+"\n").getBytes());
+                String message = new BufferedReader(new InputStreamReader(clientSocket.getInputStream())).readLine();
+                System.out.println(String.format("Received message : %s", message));
+
+                // the client socket should be closed now
+                clientSocket.close();
+                mServerSocket.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+                System.out.println("Error when waiting for connection!");
+            }
+            waitThreadRunning = false;
+        }
+    };
+    private ArrayList<BluetoothDevice> arrayList = new ArrayList<>();
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -122,17 +184,7 @@ public class GeolocationActivity extends AppCompatActivity implements OnMapReady
                     @Override
                     public void onClick(View v) {
                         // recevoir le point d'interêt
-                        receptionText.setVisibility(View.VISIBLE);
-                        receptionProgressBar.setVisibility(View.VISIBLE);
                         envoyer.setEnabled(false);
-                    }
-                });
-
-                envoyer.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        recevoir.setEnabled(false);
-
                         // bluetooth is off, ask user to on it.
                         if (bluetoothAdapter == null) {
                             // device doesn't support bluetooth
@@ -168,46 +220,116 @@ public class GeolocationActivity extends AppCompatActivity implements OnMapReady
                                 bluetoothOK.setOnClickListener(new View.OnClickListener() {
                                     @Override
                                     public void onClick(View view) {
-                                        BluetoothDevice device = arrayList.get(bluetoothSpinner.getSelectedItemPosition());
-                                        ParcelUuid[] uuids = device.getUuids();
-                                        BluetoothSocket socket = null;
-                                        try {
-                                            socket = device.createRfcommSocketToServiceRecord(uuids[0].getUuid());
-                                            socket.connect();
-                                            OutputStream outputStream = socket.getOutputStream();
-                                            outputStream.write(poiSpinner.getSelectedItem().toString().getBytes());
-                                        } catch (IOException e) {
-                                            e.printStackTrace();
-                                        }
+                                        receptionText.setVisibility(View.VISIBLE);
+                                        receptionProgressBar.setVisibility(View.VISIBLE);
+                                        bluetoothSpinner.setVisibility(View.INVISIBLE);
+                                        spinnerText.setVisibility(View.INVISIBLE);
+                                        bluetoothOK.setVisibility(View.INVISIBLE);
+                                        mmDevice = arrayList.get(bluetoothSpinner.getSelectedItemPosition());
+                                            // receive data here
+                                            try {
+                                                BluetoothSocket socket = mmDevice.createRfcommSocketToServiceRecord(GeolocationActivity.SERVICE_PINGPONG_UUID);
+                                                socket.connect();
+
+                                                String message = new BufferedReader(new InputStreamReader(socket.getInputStream())).readLine();
+                                                System.out.println("**********************************************");
+                                                System.out.println("****************** MESSAGE *******************");
+                                                System.out.println("**********************************************");
+                                                System.out.println(message);
+                                                System.out.println("**********************************************");
+                                                socket.getOutputStream().write("Hello back, dear Bluetooth server!\n".getBytes());
+                                            } catch (IOException e) {
+                                                e.printStackTrace();
+                                            }
+
                                     }
                                 });
                             }
-
-
-// Spinner spinYear = (Spinner)findViewById(R.id.spin);
                         }
+                    }
+                });
 
-                        // envoyer le point d'interêt
-                       /** BluetoothDevice[] devices = (BluetoothDevice[]) bondedDevices.toArray();
+                envoyer.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        recevoir.setEnabled(false);
 
-                        BluetoothDevice device = devices[0];
+                        // bluetooth is off, ask user to on it.
+                        if (bluetoothAdapter == null) {
+                            // device doesn't support bluetooth
+                        }
+                        else {
+                            bluetoothSpinner.setVisibility(View.VISIBLE);
+                            spinnerText.setVisibility(View.VISIBLE);
+                            bluetoothOK.setVisibility(View.VISIBLE);
 
-                        ParcelUuid[] uuids = device.getUuids();
+                            // creating a bluetooth object
+                            BluetoothAdapter adapter = BluetoothAdapter.getDefaultAdapter();
+                            if (adapter == null) {
+                                // create a 'Toast', representing an ephemeral message to be displayed, and show it
+                                Toast.makeText(GeolocationActivity.this, "Bluetooth not supported on this device!", Toast.LENGTH_LONG).show();
+                                System.exit(RESULT_OK);
+                            }
+                            // ask to enable bluetooth if not enabled
+                            if (!adapter.isEnabled()) {
+                                Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
+                                startActivityForResult(enableBtIntent, 1);
+                            }
+                            // register for broadcasts when a device is discovered
+                            IntentFilter filter = new IntentFilter(BluetoothDevice.ACTION_FOUND);
+                            registerReceiver(mReceiver, filter);
 
-                        BluetoothSocket socket = null;
-                        try {
-                            socket = device.createRfcommSocketToServiceRecord(uuids[0].getUuid());
+                            // get the adapter and keep its reference
+                            mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+                            mVisibleDevices.clear();
+                            // start discovering the surrounding bluetooth devices
+                            //misibleDevices = mBluetoothAdapter.getBondedDevices();//mBluetoothAdapter.startDiscovery();
+                           // if (mVisibleDevices.size() > 0) {
+                                //arrayList = new ArrayList<>();
+                                for(BluetoothDevice b : mBluetoothAdapter.getBondedDevices()){
+                                    mVisibleDevices.add(b);
+                                }
+                                String[] strings = new String[mVisibleDevices.size()];
+                                int i = 0;
+                                for(BluetoothDevice b : mVisibleDevices){
+                                    strings[i] = b.getName();
+                                    i++;
+                                }
+                                ArrayAdapter<String> spinnerArrayAdapter = new ArrayAdapter<String>(
+                                        GeolocationActivity.this, android.R.layout.simple_spinner_item, strings);
+                                spinnerArrayAdapter.setDropDownViewResource( android.R.layout.simple_spinner_dropdown_item );
+                                bluetoothSpinner.setAdapter(spinnerArrayAdapter);
+                                bluetoothOK.setOnClickListener(new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View view) {
+                                        mmDevice = mVisibleDevices.get(bluetoothSpinner.getSelectedItemPosition());
 
 
-                        socket.connect();
+                                            mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+                                            // still in the onCreate method
+                                            Intent discoverableIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_DISCOVERABLE);
+                                            discoverableIntent.putExtra(BluetoothAdapter.EXTRA_DISCOVERABLE_DURATION, 0);
+                                            startActivity(discoverableIntent);
+                                        synchronized (this) {
+                                            if (!waitThreadRunning) {
+                                                try {
+                                                    mServerSocket = mBluetoothAdapter.listenUsingRfcommWithServiceRecord(
+                                                            GeolocationActivity.SERVICE_PINGPONG_NAME,
+                                                            GeolocationActivity.SERVICE_PINGPONG_UUID);
 
-                            OutputStream outputStream = socket.getOutputStream();
+                                                    // the server thread, defined later, will be "mListenThread"
+                                                    new Thread(mListenThread).start();
+                                                    waitThreadRunning = true;
 
-                            InputStream inStream = socket.getInputStream();
-                            outputStream.write(poiSpinner.getSelectedItem().toString().getBytes());
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        }*/
+                                                } catch (IOException e) {
+                                                    e.printStackTrace();
+                                                }
+                                            }
+
+                                    }}
+                                });
+                            }
+                        //}
                     }
                 });
 
@@ -230,6 +352,14 @@ public class GeolocationActivity extends AppCompatActivity implements OnMapReady
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
     }
+
+
+
+
+
+
+
+
 
     public boolean onOptionsItemSelected(MenuItem item){
         finish();
