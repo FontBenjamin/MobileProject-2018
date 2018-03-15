@@ -61,6 +61,10 @@
             android:name="com.iteam.easyups.activities.ProfileActivity"
             android:label="@string/title_activity_main2">
         </activity>
+        <activity
+            android:name="com.iteam.easyups.activities.UserInfoActivity"
+            android:label="@string/title_activity_main2">
+        </activity>
 
         <activity
             android:name="com.iteam.easyups.activities.TimetableActivity">
