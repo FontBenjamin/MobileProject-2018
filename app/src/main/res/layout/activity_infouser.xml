@@ -1,20 +1,37 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
- android:layout_width="match_parent"
+    android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
 
 
     <RelativeLayout
         android:layout_width="match_parent"
+        android:layout_height="100dp"
+        android:layout_weight="1">
+
+        <ImageView
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true"
+            android:background="@mipmap/ic_launcher" />
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_weight="1"
-       >
+        android:layout_weight="1">
 
         <LinearLayout
+            android:id="@+id/linearLayout3"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_below="@+id/progressbaruser"
+            android:layout_marginTop="29dp"
             android:orientation="vertical"
             android:paddingLeft="15dp"
             android:paddingRight="15dp">
@@ -28,33 +45,22 @@
                 android:inputType="textEmailAddress"
                 android:paddingBottom="15dp" />
 
-            <TextView
-                android:id="@+id/textUrl"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:fontFamily="sans-serif"
-                android:hint="Url"
-                android:inputType="textPassword"
-                android:paddingBottom="15dp"
-                />
+
             <TextView
                 android:id="@+id/textFormationName"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:fontFamily="sans-serif"
-                android:hint="FormationName"
-                android:inputType="textPassword"
-                android:paddingBottom="15dp"
-                />
+                android:hint="Intitulé"
+                android:paddingBottom="15dp" />
+
             <TextView
                 android:id="@+id/textGroupeName"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:fontFamily="sans-serif"
-                android:hint="GroupeName"
-                android:inputType="textPassword"
-                android:paddingBottom="15dp"
-                />
+                android:hint="Groupe"
+                android:paddingBottom="15dp" />
 
             <Button
                 android:id="@+id/buttonUpdate"
@@ -62,16 +68,15 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:layout_margin="7dp"
-                android:text="Modifier"
                 android:background="@color/colorPrimary"
+                android:text="Modifier"
                 android:textAllCaps="false" />
-
 
 
         </LinearLayout>
 
         <ProgressBar
-            android:id="@+id/progressbar"
+            android:id="@+id/progressbaruser"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerHorizontal="true"

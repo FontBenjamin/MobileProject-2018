@@ -5,6 +5,7 @@ import android.content.pm.ApplicationInfo;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.google.firebase.auth.FirebaseAuth;
@@ -26,6 +27,9 @@ import com.iteam.easyups.model.User;
 public class UserInfoActivity extends AppCompatActivity {
     private FirebaseAuth auth;
     private TextView name, groupeText, formation;
+    ProgressBar progressBar;
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,30 +47,30 @@ public class UserInfoActivity extends AppCompatActivity {
         name = findViewById(R.id.textName);
         formation = findViewById(R.id.textFormationName);
         groupeText = findViewById(R.id.textGroupeName);
+        progressBar = findViewById(R.id.progressbaruser);
 
         final FirebaseUser user = auth.getCurrentUser();
-         String id = user.getUid();
-            FirebaseDatabase database = DatabaseConnection.getDatabase();
-            DatabaseReference ref = database.getReference().child(BDDRoutes.USERS_PATH).child(id);
-            ref.addValueEventListener(new ValueEventListener() {
-                @Override
-                public void onDataChange(DataSnapshot dataSnapshot) {
-                    User user = dataSnapshot.getValue(User.class);
-                    if (user.name != null) {
-                        name.setText(user.name);
-                        formation.setText(user.formationName);
-                        groupeText.setText(user.groupName);
-
-                    }
-                }
-
-                @Override
-                public void onCancelled(DatabaseError databaseError) {
-                    System.out.println("The read failed: " + databaseError.getCode());
-                }
-            });
+        String id = user.getUid();
+        FirebaseDatabase database = DatabaseConnection.getDatabase();
+        DatabaseReference ref = database.getReference().child(BDDRoutes.USERS_PATH).child(id);
+        progressBar.setVisibility(View.VISIBLE);
+        ref.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                User user = dataSnapshot.getValue(User.class);
+                progressBar.setVisibility(View.GONE);
+                name.setText(user.name);
+                formation.setText(user.formationName);
+                groupeText.setText(user.groupName);
 
 
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                System.out.println("The read failed: " + databaseError.getCode());
+            }
+        });
 
 
         findViewById(R.id.buttonUpdate).setOnClickListener(new View.OnClickListener() {

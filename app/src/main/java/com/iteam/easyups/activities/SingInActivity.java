@@ -55,7 +55,7 @@ public class SingInActivity extends AppCompatActivity implements View.OnClickLis
         super.onStart();
 
         if (auth.getCurrentUser() != null) {
-            startActivity(new Intent(this, ProfileActivity.class));
+            startActivity(new Intent(this, UserInfoActivity.class));
             finish();
         }
     }
@@ -104,7 +104,7 @@ public class SingInActivity extends AppCompatActivity implements View.OnClickLis
                 bar.setVisibility(View.GONE);
                 if (task.isSuccessful()) {
 
-                    Intent intent = new Intent(SingInActivity.this, ProfileActivity.class);
+                    Intent intent = new Intent(SingInActivity.this, UserInfoActivity.class);
                     intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                     startActivity(intent);
                     finish();
