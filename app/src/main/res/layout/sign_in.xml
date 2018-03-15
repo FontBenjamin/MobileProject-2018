@@ -40,10 +40,9 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:fontFamily="sans-serif"
-                android:hint="email"
+                android:hint="Email"
                 android:inputType="textEmailAddress"
-                android:paddingBottom="15dp"
-               />
+                android:paddingBottom="15dp" />
 
             <EditText
                 android:id="@+id/textPassword"

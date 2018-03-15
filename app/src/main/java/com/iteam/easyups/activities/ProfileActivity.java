@@ -4,17 +4,11 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ApplicationInfo;
 import android.graphics.Bitmap;
-import android.content.Context;
-import android.content.Intent;
-import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
-import android.provider.MediaStore;
-import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
@@ -25,7 +19,6 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.Spinner;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -37,7 +30,6 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.UserProfileChangeRequest;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
@@ -51,13 +43,10 @@ import com.iteam.easyups.model.Formation;
 import com.iteam.easyups.model.FormationGroup;
 import com.iteam.easyups.model.User;
 
-
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
  * Created by sara  on 08/03/2018.
@@ -66,7 +55,6 @@ import java.util.Map;
 public class ProfileActivity extends AppCompatActivity {
     private static final int CHOOSE_IMAGE = 101;
 
-    private TextView textView;
     private ImageView imageView;
     private EditText nameText;
     private String timeTableUrl = "";
@@ -76,20 +64,23 @@ public class ProfileActivity extends AppCompatActivity {
     private ProgressBar progressBar;
     private String profileImageUrl;
     private FirebaseAuth auth;
+    private Formation formation;
+    private FormationGroup formationGroup;
     private FirebaseDatabase database = DatabaseConnection.getDatabase();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.profile);
+        android.support.v7.app.ActionBar actionBar = getSupportActionBar();
+        actionBar.setDisplayHomeAsUpEnabled(true);
         ApplicationInfo applicationInfo = this.getApplicationInfo();
         int stringId = applicationInfo.labelRes;
         String result = stringId == 0 ? applicationInfo.nonLocalizedLabel.toString() : this.getString(stringId);
         this.setTitle(result);
+
         auth = FirebaseAuth.getInstance();
         mContext = this;
-        android.support.v7.app.ActionBar actionBar = getSupportActionBar();
-        actionBar.setDisplayHomeAsUpEnabled(true);
         nameText = findViewById(R.id.pseudo);
         edtText = (Spinner) findViewById(R.id.edtText);
         niveauText = (Spinner) findViewById(R.id.niveauText);
@@ -97,7 +88,6 @@ public class ProfileActivity extends AppCompatActivity {
         groupeText = (Spinner) findViewById(R.id.groupeText);
         imageView = findViewById(R.id.imageView);
         progressBar = findViewById(R.id.progressbar);
-        //textView = findViewById(R.id.textVerified);
 
         imageView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -108,19 +98,14 @@ public class ProfileActivity extends AppCompatActivity {
         getFormationByLevel();
         initFormationSpinner();
 
-        //loadUserInformation();
-
         findViewById(R.id.buttonSave).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 saveUserInformation();
-                startActivity(new Intent(ProfileActivity.this, MainActivity.class));
 
             }
         });
 
-
-        initFormationSpinner();
     }
 
     public boolean onOptionsItemSelected(MenuItem item){
@@ -138,7 +123,7 @@ public class ProfileActivity extends AppCompatActivity {
 
             @Override
             public void onNothingSelected(AdapterView<?> parentView) {
-                // your code here
+                //TODO
             }
 
         });
@@ -152,7 +137,7 @@ public class ProfileActivity extends AppCompatActivity {
 
             @Override
             public void onNothingSelected(AdapterView<?> parentView) {
-                // your code here
+                //TODO
             }
 
         });
@@ -160,14 +145,14 @@ public class ProfileActivity extends AppCompatActivity {
         intituleText.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
-                Formation formation = (Formation) parentView.getItemAtPosition(position);
+                formation = (Formation) parentView.getItemAtPosition(position);
                 timeTableUrl = formation.timeTableLink;
                 updateGroupSpinner(formation);
             }
 
             @Override
             public void onNothingSelected(AdapterView<?> parentView) {
-                // your code here
+                //TODO
             }
 
         });
@@ -176,71 +161,72 @@ public class ProfileActivity extends AppCompatActivity {
             @Override
             public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
                 if (parentView.getItemAtPosition(position) instanceof FormationGroup) {
-                    FormationGroup group = (FormationGroup) parentView.getItemAtPosition(position);
+                    formationGroup = (FormationGroup) parentView.getItemAtPosition(position);
                     int index = timeTableUrl.lastIndexOf('/');
                     timeTableUrl = timeTableUrl.substring(0, index);
-                    timeTableUrl += "/" + group.timeTableLink;
+                    timeTableUrl += "/" + formationGroup.timeTableLink;
                 }
             }
 
             @Override
             public void onNothingSelected(AdapterView<?> parentView) {
-                // your code here
+                //TODO
             }
 
         });
 
     }
 
-
+    /**
+     * Save the user profile in db
+     */
     private void saveUserInformation() {
-        String name = nameText.getText().toString();
-        String intitulé = intituleText.getSelectedItem().toString();
-        String groupe = groupeText.getSelectedItem().toString();
+        final String name = nameText.getText().toString();
+        FirebaseUser user = auth.getCurrentUser();
 
         if (name.isEmpty()) {
             nameText.setError("Nom est obligatoire");
             nameText.requestFocus();
-            return;
-        }
+        }else if (user != null) {
+            final String userId = user.getUid();
 
-
-        FirebaseUser user = auth.getCurrentUser();
-
-        if (user != null) {
-
-            String userId = user.getUid();
-            FirebaseDatabase data = DatabaseConnection.getDatabase();
-
-            DatabaseReference dataReference = data.getReference().child(BDDRoutes.USERS_PATH).child(userId);
-
-
-            Map newPost = new HashMap();
-            newPost.put("name", name);
-            newPost.put("intitulé", intitulé);
-            newPost.put("groupe", groupe);
-            newPost.put("EDT", timeTableUrl);
-            dataReference.setValue(newPost);
-            uploadImageToFirebaseStorage();
-        }
-
-        if (user != null && profileImageUrl != null) {
-            UserProfileChangeRequest profile = new UserProfileChangeRequest.Builder()
-                    .setPhotoUri(Uri.parse(profileImageUrl))
-                    .build();
-
-
-            user.updateProfile(profile)
-                    .addOnCompleteListener(new OnCompleteListener<Void>() {
-
+            database.getReference().child(BDDRoutes.USERS_PATH).child(userId).addListenerForSingleValueEvent(
+                    new ValueEventListener() {
                         @Override
-                        public void onComplete(@NonNull Task<Void> task) {
-                            if (task.isSuccessful()) {
-
-                                Toast.makeText(ProfileActivity.this, "Profil mis à jour", Toast.LENGTH_SHORT).show();
-                            }
+                        public void onDataChange(DataSnapshot dataSnapshot) {
+                            User user = dataSnapshot.getValue(User.class);
+                            user.name = name;
+                            user.formationName = formation.name;
+                            user.groupName = formationGroup.name;
+                            user.timetableLink = timeTableUrl;
+                            database.getReference().child(BDDRoutes.USERS_PATH).child(userId).setValue(user);
                         }
-                    });
+                        @Override
+                        public void onCancelled(DatabaseError databaseError) {
+
+                        }
+                    }
+            );
+
+            uploadImageToFirebaseStorage();
+
+            if(profileImageUrl != null){
+                UserProfileChangeRequest profile = new UserProfileChangeRequest.Builder()
+                        .setPhotoUri(Uri.parse(profileImageUrl))
+                        .build();
+
+
+                user.updateProfile(profile)
+                        .addOnCompleteListener(new OnCompleteListener<Void>() {
+                            @Override
+                            public void onComplete(@NonNull Task<Void> task) {
+                                if (task.isSuccessful()) {
+                                    Toast.makeText(ProfileActivity.this, "Profil mis à jour", Toast.LENGTH_SHORT).show();
+                                }
+                            }
+                        });
+            }
+            startActivity(new Intent(ProfileActivity.this, MainActivity.class));
         }
     }
 
@@ -287,7 +273,7 @@ public class ProfileActivity extends AppCompatActivity {
     }
 
 
-    public void getFormationByLevel() {
+    private void getFormationByLevel() {
         database.getReference().child(BDDRoutes.FORMATION_PATH).addListenerForSingleValueEvent(
                 new ValueEventListener() {
                     @Override
@@ -312,7 +298,7 @@ public class ProfileActivity extends AppCompatActivity {
 
     }
 
-    public void updateLevelSpinner(DataSnapshot data) {
+    private void updateLevelSpinner(DataSnapshot data) {
         List<DataSnapshot> levels = new ArrayList<>();
         for (DataSnapshot dataChild : data.getChildren()) {
             levels.add(dataChild);
@@ -324,7 +310,7 @@ public class ProfileActivity extends AppCompatActivity {
 
     }
 
-    public void updateGroupSpinner(Formation formation) {
+    private void updateGroupSpinner(Formation formation) {
         List<FormationGroup> formationGroup;
         ArrayAdapter<?> adapter;
         if (formation.groupsList == null) {
@@ -342,7 +328,7 @@ public class ProfileActivity extends AppCompatActivity {
         groupeText.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
     }
 
-    public void updateFormationSpinner(DataSnapshot data) {
+    private void updateFormationSpinner(DataSnapshot data) {
         List<Formation> formations = new ArrayList<>();
         for (DataSnapshot dataFormation : data.getChildren()) {
             formations.add(dataFormation.getValue(Formation.class));

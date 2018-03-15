@@ -1,7 +1,5 @@
 package com.iteam.easyups.model;
 
-import android.util.Log;
-
 import com.google.firebase.database.Exclude;
 import com.google.firebase.database.IgnoreExtraProperties;
 

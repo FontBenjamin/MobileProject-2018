@@ -10,20 +10,30 @@ public class User {
 
 
     public String name;
-    public String EDT;
+    public String timetableLink;
+    public String formationName;
+    public String groupName;
+
     @Exclude
     public String id;
 
 
     public User() {
-
+        this.name = "";
+        this.timetableLink = "";
     }
 
-
-    public User(String name, String EDT) {
+    public User(String name, String timetableLink) {
         this.name = name;
-        this.EDT = EDT;
+        this.timetableLink = timetableLink;
     }
 
 
+    public String getName() {
+        return name;
+    }
+
+    public String getTimetableLink() {
+        return timetableLink;
+    }
 }

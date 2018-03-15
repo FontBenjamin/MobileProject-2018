@@ -1,7 +1,7 @@
 package com.iteam.easyups.activities;
 
 import android.Manifest;
-import android.app.ActionBar;
+import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.bluetooth.BluetoothAdapter;
@@ -16,9 +16,11 @@ import android.content.IntentFilter;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.os.Handler;
 import android.os.ParcelUuid;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -53,6 +55,7 @@ import com.iteam.easyups.adapter.PlaceSpinnerAdapter;
 import com.iteam.easyups.communication.BDDRoutes;
 import com.iteam.easyups.communication.DatabaseConnection;
 import com.iteam.easyups.model.Place;
+import com.iteam.easyups.utils.Util;
 
 import java.io.BufferedReader;
 import java.io.DataOutput;
@@ -149,8 +152,11 @@ public class GeolocationActivity extends AppCompatActivity implements OnMapReady
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         context = this;
         setContentView(R.layout.activity_geolocation);
+
+        // Bluetooth part
         ApplicationInfo applicationInfo = this.getApplicationInfo();
         final int stringId = applicationInfo.labelRes;
         String result = stringId == 0 ? applicationInfo.nonLocalizedLabel.toString() : this.getString(stringId);
@@ -336,13 +342,14 @@ public class GeolocationActivity extends AppCompatActivity implements OnMapReady
                 dialog.show();
             }
         });
+
         buildingSpinner.setOnItemSelectedListener(this);
         amphitheaterSpinner = (Spinner) findViewById(R.id.amphitheaters);
         amphitheaterSpinner.setOnItemSelectedListener(this);
         poiSpinner = (Spinner) findViewById(R.id.poi);
         poiSpinner.setOnItemSelectedListener(this);
 
-        removePoiButton =  findViewById(R.id.remove_poi);
+        removePoiButton = (FloatingActionButton) findViewById(R.id.remove_poi);
 
         buildingManagement();
         amphitheaterManagement();
@@ -366,22 +373,34 @@ public class GeolocationActivity extends AppCompatActivity implements OnMapReady
         return true;
     }
 
+    /**
+     * This method is execute when google map is ready
+     * @param googleMap The map
+     */
+    @SuppressLint("MissingPermission")
     @Override
     public void onMapReady(GoogleMap googleMap) {
         map = googleMap;
+
+        if (!Util.requestPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)) {
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 0);
+        }
+        else
+        {
+            map.setMyLocationEnabled(true);
+        }
 
         // Open activity with camera on Paul Sabatier
         LatLng latLng = new LatLng(43.562038, 1.466371);
         map.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 15));
 
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
-            map.setMyLocationEnabled(true);
-        }
-
         createPoiOnMap();
     }
 
-    public void buildingManagement()
+    /**
+     * Recover buildings from database
+     */
+    private void buildingManagement()
     {
         DatabaseReference ref = database.getReference(BDDRoutes.BUILDING_PATH);
         ref.addValueEventListener(new ValueEventListener() {
@@ -399,7 +418,10 @@ public class GeolocationActivity extends AppCompatActivity implements OnMapReady
         });
     }
 
-    public void addBuildingsOnSpinner()
+    /**
+     * Add buildings on spinner
+     */
+    private void addBuildingsOnSpinner()
     {
         Place place = new Place();
         place.setName("Bâtiments");
@@ -409,7 +431,10 @@ public class GeolocationActivity extends AppCompatActivity implements OnMapReady
         buildingSpinner.setAdapter(dataAdapter);
     }
 
-    public void amphitheaterManagement()
+    /**
+     * Recover amphitheaters from database
+     */
+    private void amphitheaterManagement()
     {
         DatabaseReference ref = database.getReference(BDDRoutes.AMPHIS_PATH);
         ref.addValueEventListener(new ValueEventListener() {
@@ -427,8 +452,10 @@ public class GeolocationActivity extends AppCompatActivity implements OnMapReady
         });
     }
 
-
-    public void addAmphitheatersOnSpinner()
+    /**
+     * Add amphitheaters on spinner
+     */
+    private void addAmphitheatersOnSpinner()
     {
         Place place = new Place();
         place.setName("Amphis");
@@ -438,7 +465,10 @@ public class GeolocationActivity extends AppCompatActivity implements OnMapReady
         amphitheaterSpinner.setAdapter(dataAdapter);
     }
 
-    public void poiManagement()
+    /**
+     * Recover points of interest from database
+     */
+    private void poiManagement()
     {
         final FirebaseUser user = auth.getCurrentUser();
 
@@ -480,35 +510,41 @@ public class GeolocationActivity extends AppCompatActivity implements OnMapReady
         else
         {
             poiSpinner.setEnabled(false);
-            FloatingActionButton button =  findViewById(R.id.remove_poi);
-            button.setEnabled(false);
+            removePoiButton.setEnabled(false);
         }
     }
 
-    public void addPoiOnSpinner()
+    /**
+     * Add points of interest on spinner
+     */
+    private void addPoiOnSpinner()
     {
         Place place = new Place();
-        place.setName("Centres d'intérêt");
+        place.setName("Points d'intérêt");
         poiList.add(0, place);
+
+        PlaceSpinnerAdapter dataAdapter = new PlaceSpinnerAdapter(context, R.layout.support_simple_spinner_dropdown_item, poiList);
+        poiSpinner.setAdapter(dataAdapter);
 
         if (poiList.size() == 1)
         {
             poiSpinner.setEnabled(false);
         }
-
-        PlaceSpinnerAdapter dataAdapter = new PlaceSpinnerAdapter(context, R.layout.support_simple_spinner_dropdown_item, poiList);
-        poiSpinner.setAdapter(dataAdapter);
+        removePoiButton.setEnabled(false);
     }
 
-    public void createPoiOnMap()
+    /**
+     * Create a new point of interest on google map
+     */
+    private void createPoiOnMap()
     {
         map.setOnMapLongClickListener(new GoogleMap.OnMapLongClickListener() {
             @Override
             public void onMapLongClick(final LatLng latLng) {
                 final EditText poiEditText = new EditText(context);
+                poiEditText.setHint("Nom");
                 AlertDialog dialog = new AlertDialog.Builder(context)
                         .setTitle("Nouveau point d'intérêt")
-                        .setMessage("Nom du point d'intérêt :")
                         .setView(poiEditText)
                         .setPositiveButton("Valider", new DialogInterface.OnClickListener() {
                             @Override
@@ -529,7 +565,12 @@ public class GeolocationActivity extends AppCompatActivity implements OnMapReady
         });
     }
 
-    public void savePoi(LatLng latLng, String poiName)
+    /**
+     * Save point of interest in the database
+     * @param latLng Latitude and longitude of point of interest
+     * @param poiName Name of point of interest
+     */
+    private void savePoi(LatLng latLng, String poiName)
     {
         final FirebaseUser user = auth.getCurrentUser();
 
@@ -543,17 +584,23 @@ public class GeolocationActivity extends AppCompatActivity implements OnMapReady
         }
     }
 
-    public void removePoi()
+    /**
+     * Remove a point of interest from the database
+     */
+    private void removePoi()
     {
         removePoiButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                map.clear();
-                Place poi = (Place) poiSpinner.getSelectedItem();
-                final FirebaseUser user = auth.getCurrentUser();
+                if (poiSpinner.getSelectedItemPosition() != 0)
+                {
+                    map.clear();
+                    Place poi = (Place) poiSpinner.getSelectedItem();
+                    final FirebaseUser user = auth.getCurrentUser();
 
-                if (user != null) {
-                    String userId = user.getUid();
-                    database.getReference(BDDRoutes.USERS_PATH).child(userId).child("poi").child(poi.getId()).setValue(null);
+                    if (user != null) {
+                        String userId = user.getUid();
+                        database.getReference(BDDRoutes.USERS_PATH).child(userId).child("poi").child(poi.getId()).setValue(null);
+                    }
                 }
             }
         });
@@ -612,6 +659,10 @@ public class GeolocationActivity extends AppCompatActivity implements OnMapReady
                         removePoiButton.setEnabled(true);
                     }
                 }
+                else
+                {
+                    removePoiButton.setEnabled(false);
+                }
                 break;
         }
     }
@@ -620,5 +671,4 @@ public class GeolocationActivity extends AppCompatActivity implements OnMapReady
     public void onNothingSelected(AdapterView<?> parent) {
 
     }
-
 }
