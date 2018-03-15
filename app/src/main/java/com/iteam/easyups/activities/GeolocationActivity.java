@@ -101,10 +101,6 @@ public class GeolocationActivity extends AppCompatActivity implements OnMapReady
 
         android.support.v7.app.ActionBar actionBar = getSupportActionBar();
         actionBar.setDisplayHomeAsUpEnabled(true);
-        ApplicationInfo applicationInfo = this.getApplicationInfo();
-        final int stringId = applicationInfo.labelRes;
-        String result = stringId == 0 ? applicationInfo.nonLocalizedLabel.toString() : this.getString(stringId);
-        this.setTitle(result);
 
         setContentView(R.layout.activity_geolocation);
 
