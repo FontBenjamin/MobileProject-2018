@@ -46,7 +46,14 @@ public class PlaceSpinnerAdapter extends ArrayAdapter {
 
     @Override
     public boolean isEnabled(int position){
-        return true;
+        if (position == 0)
+        {
+            return false;
+        }
+        else
+        {
+            return true;
+        }
     }
 
     @Override
