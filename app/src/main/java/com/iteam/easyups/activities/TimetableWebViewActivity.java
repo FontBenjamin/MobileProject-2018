@@ -62,27 +62,6 @@ public class TimetableWebViewActivity extends AppCompatActivity {
         });
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.main_activity, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.changeEdt:
-                auth.signOut();
-                startActivity(new Intent(TimetableWebViewActivity.this, MainActivity
-                        .class));
-                return true;
-            default:
-                finish();
-                return super.onOptionsItemSelected(item);
-        }
-    }
-
     /**
      * Resolve http request and display its result
      * @param timeTableUrl the http address
