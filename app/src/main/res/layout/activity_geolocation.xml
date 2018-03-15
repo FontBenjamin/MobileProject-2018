@@ -82,7 +82,14 @@
             android:name="com.google.android.gms.maps.SupportMapFragment"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            tools:context="com.iteam.easyups.activities.GeolocationActivity" />
+            tools:context="com.iteam.easyups.activities.GeolocationActivity"
+            map:mapType="hybrid"
+            map:uiZoomControls="true"
+            map:uiZoomGestures="true"
+            map:uiCompass="true"
+            map:uiRotateGestures="true"
+            map:uiScrollGestures="true"
+            map:uiTiltGestures="true"/>
 
     </LinearLayout>
 
