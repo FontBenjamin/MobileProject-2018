@@ -71,6 +71,15 @@
                 android:background="@color/colorPrimary"
                 android:text="Modifier"
                 android:textAllCaps="false" />
+            <Button
+                android:id="@+id/buttonLogout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_margin="7dp"
+                android:background="@color/colorPrimary"
+                android:text="Déconnecter"
+                android:textAllCaps="false" />
 
 
         </LinearLayout>
