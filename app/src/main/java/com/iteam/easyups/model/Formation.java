@@ -13,15 +13,15 @@ import java.util.List;
 @IgnoreExtraProperties
 public class Formation   {
 
-    public  String name;
-    public  String timeTableLink;
+    private  String name;
+    private  String timeTableLink;
     @Exclude
-    public String id;
-    public List<FormationGroup> groupsList;
+    private String id;
+    private List<FormationGroup> groupsList;
     @Exclude
-    public String department;
+    private String department;
     @Exclude
-    public String level;
+    private String level;
 
 
 
@@ -53,6 +53,54 @@ public class Formation   {
         } catch (MalformedURLException e) {
             e.printStackTrace();
         }
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getTimeTableLink() {
+        return timeTableLink;
+    }
+
+    public void setTimeTableLink(String timeTableLink) {
+        this.timeTableLink = timeTableLink;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public List<FormationGroup> getGroupsList() {
+        return groupsList;
+    }
+
+    public void setGroupsList(List<FormationGroup> groupsList) {
+        this.groupsList = groupsList;
+    }
+
+    public String getDepartment() {
+        return department;
+    }
+
+    public void setDepartment(String department) {
+        this.department = department;
+    }
+
+    public String getLevel() {
+        return level;
+    }
+
+    public void setLevel(String level) {
+        this.level = level;
     }
 
     @Override

@@ -48,7 +48,6 @@ public class Anomaly {
         return BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
     }
 
-    @Exclude
     public String getId() {
         return id;
     }

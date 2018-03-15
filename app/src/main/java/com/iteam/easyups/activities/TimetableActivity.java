@@ -135,7 +135,7 @@ public class TimetableActivity extends AppCompatActivity {
                     FormationGroup group = (FormationGroup) parentView.getItemAtPosition(position);
                     int index = timeTableUrl.lastIndexOf('/');
                     timeTableUrl = timeTableUrl.substring(0, index);
-                    timeTableUrl += "/" + group.timeTableLink;
+                    timeTableUrl += "/" + group.getTimeTableLink();
                 }
             }
 
@@ -152,7 +152,7 @@ public class TimetableActivity extends AppCompatActivity {
             @Override
             public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
                 Formation formation = (Formation)parentView.getItemAtPosition(position);
-                timeTableUrl = formation.timeTableLink;
+                timeTableUrl = formation.getTimeTableLink();
                 updateGroupSpinner(spinnerGroup, formation);
 
             }
@@ -274,11 +274,11 @@ public class TimetableActivity extends AppCompatActivity {
     private void updateGroupSpinner(final Spinner spinnerGroup, Formation formation){
         List<FormationGroup> formationGroup;
         ArrayAdapter<?> adapter;
-        if(formation.groupsList == null){
+        if(formation.getGroupsList() == null){
            adapter =  new ArrayAdapter<String> (mContext,
                     android.R.layout.simple_spinner_item, Arrays.asList("Aucun groupe pour cette formation"));
         }else{
-            formationGroup  =  formation.groupsList;
+            formationGroup  =  formation.getGroupsList();
             adapter =  new ArrayAdapter<FormationGroup> (mContext,
                     android.R.layout.simple_spinner_item, formationGroup);
         }
