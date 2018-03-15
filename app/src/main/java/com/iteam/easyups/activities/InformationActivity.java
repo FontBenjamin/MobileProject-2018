@@ -104,7 +104,7 @@ public class InformationActivity extends AppCompatActivity {
     }
 
     public boolean onOptionsItemSelected(MenuItem item) {
-        finish();
+        onBackPressed();
         return true;
     }
 
