@@ -4,6 +4,6 @@
     <item
         android:id="@+id/changeEdt"
         android:orderInCategory="100"
-        android:title="Voir un autre edt"
+        android:title="Se déconnecter"
         app:showAsAction="never" />
 </menu>

@@ -9,10 +9,10 @@ import com.google.firebase.database.IgnoreExtraProperties;
 @IgnoreExtraProperties
 public class FormationGroup {
 
-    public  String name;
-    public  String timeTableLink;
+    private String name;
+    private String timeTableLink;
     @Exclude
-    public String id;
+    private String id;
 
     public FormationGroup(){
 
@@ -23,6 +23,30 @@ public class FormationGroup {
         this.name = name;
         this.timeTableLink = edtLink;
 
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getTimeTableLink() {
+        return timeTableLink;
+    }
+
+    public void setTimeTableLink(String timeTableLink) {
+        this.timeTableLink = timeTableLink;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
     }
 
     @Override

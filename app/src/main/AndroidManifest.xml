@@ -59,10 +59,12 @@
 
         <activity
             android:name="com.iteam.easyups.activities.ProfileActivity"
+            android:screenOrientation="portrait"
             android:label="@string/title_activity_main2">
         </activity>
         <activity
             android:name="com.iteam.easyups.activities.UserInfoActivity"
+            android:screenOrientation="portrait"
             android:label="@string/title_activity_main2">
         </activity>
 

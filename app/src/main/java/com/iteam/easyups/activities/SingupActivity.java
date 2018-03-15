@@ -32,6 +32,15 @@ public class SingupActivity extends AppCompatActivity implements View.OnClickLis
     EditText emailText,pswdText;
     private FirebaseDatabase database = DatabaseConnection.getDatabase();
 
+    @Override
+    protected void onStart() {
+        super.onStart();
+
+        if (auth.getCurrentUser() != null) {
+            startActivity(new Intent(this, UserInfoActivity.class));
+            finish();
+        }
+    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {

@@ -4,6 +4,7 @@ import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -17,6 +18,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.firebase.auth.FirebaseAuth;
 import com.iteam.easyups.R;
 
 /**
@@ -28,6 +30,8 @@ public class TimetableWebViewActivity extends AppCompatActivity {
     private WebView webView;
     private ProgressBar progress;
     private TextView loadingTxt;
+    private FirebaseAuth auth;
+    private FloatingActionButton changeTimetableButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,32 +43,23 @@ public class TimetableWebViewActivity extends AppCompatActivity {
         progress = findViewById(R.id.progressBarEDT);
         progress.bringToFront();
         loadingTxt = findViewById(R.id.textViewEDT);
+        changeTimetableButton = findViewById(R.id.floatingChangeTimetable);
         loadingTxt.bringToFront();
         mContext = this;
+        auth = FirebaseAuth.getInstance();
 
         //Retrieve the timetable link to display
         Intent i = getIntent();
         displayTimetable(i.getStringExtra("timeTableUrl"));
         webView.getSettings().setBuiltInZoomControls(true);
-    }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.main_activity, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.changeEdt:
+        changeTimetableButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
                 startActivity(new Intent(TimetableWebViewActivity.this, TimetableActivity.class));
-                return true;
-            default:
                 finish();
-                return super.onOptionsItemSelected(item);
-        }
+            }
+        });
     }
 
     /**
