@@ -189,6 +189,7 @@ public class TimetableActivity extends AppCompatActivity {
                 Intent i = new Intent(TimetableActivity.this, TimetableWebViewActivity.class);
                 i.putExtra("timeTableUrl", timeTableUrl);
                 startActivity(i);
+                finish();
 
             }
         });

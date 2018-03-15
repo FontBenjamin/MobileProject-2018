@@ -4,6 +4,7 @@ import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -30,6 +31,7 @@ public class TimetableWebViewActivity extends AppCompatActivity {
     private ProgressBar progress;
     private TextView loadingTxt;
     private FirebaseAuth auth;
+    private FloatingActionButton changeTimetableButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,6 +43,7 @@ public class TimetableWebViewActivity extends AppCompatActivity {
         progress = findViewById(R.id.progressBarEDT);
         progress.bringToFront();
         loadingTxt = findViewById(R.id.textViewEDT);
+        changeTimetableButton = findViewById(R.id.floatingChangeTimetable);
         loadingTxt.bringToFront();
         mContext = this;
         auth = FirebaseAuth.getInstance();
@@ -49,6 +52,14 @@ public class TimetableWebViewActivity extends AppCompatActivity {
         Intent i = getIntent();
         displayTimetable(i.getStringExtra("timeTableUrl"));
         webView.getSettings().setBuiltInZoomControls(true);
+
+        changeTimetableButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity(new Intent(TimetableWebViewActivity.this, TimetableActivity.class));
+                finish();
+            }
+        });
     }
 
     @Override
