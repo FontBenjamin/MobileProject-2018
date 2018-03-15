@@ -220,11 +220,6 @@ public class GeolocationActivity extends AppCompatActivity implements OnMapReady
                                 bluetoothOK.setOnClickListener(new View.OnClickListener() {
                                     @Override
                                     public void onClick(View view) {
-                                        receptionText.setVisibility(View.VISIBLE);
-                                        receptionProgressBar.setVisibility(View.VISIBLE);
-                                        bluetoothSpinner.setVisibility(View.INVISIBLE);
-                                        spinnerText.setVisibility(View.INVISIBLE);
-                                        bluetoothOK.setVisibility(View.INVISIBLE);
                                         mmDevice = arrayList.get(bluetoothSpinner.getSelectedItemPosition());
                                             // receive data here
                                             try {
@@ -302,6 +297,11 @@ public class GeolocationActivity extends AppCompatActivity implements OnMapReady
                                 bluetoothOK.setOnClickListener(new View.OnClickListener() {
                                     @Override
                                     public void onClick(View view) {
+                                        receptionText.setVisibility(View.VISIBLE);
+                                        receptionProgressBar.setVisibility(View.VISIBLE);
+                                        bluetoothSpinner.setVisibility(View.INVISIBLE);
+                                        spinnerText.setVisibility(View.INVISIBLE);
+                                        bluetoothOK.setVisibility(View.INVISIBLE);
                                         mmDevice = mVisibleDevices.get(bluetoothSpinner.getSelectedItemPosition());
 
 
