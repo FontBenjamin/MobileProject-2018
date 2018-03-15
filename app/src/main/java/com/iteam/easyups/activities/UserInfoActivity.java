@@ -60,9 +60,9 @@ public class UserInfoActivity extends AppCompatActivity {
             public void onDataChange(DataSnapshot dataSnapshot) {
                 User user = dataSnapshot.getValue(User.class);
                 progressBar.setVisibility(View.GONE);
-                name.setText(user.name);
-                formation.setText(user.formationName);
-                groupeText.setText(user.groupName);
+                name.setText(user.getName());
+                formation.setText(user.getFormationName());
+                groupeText.setText(user.getGroupName());
 
 
             }

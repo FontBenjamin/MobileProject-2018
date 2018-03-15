@@ -16,11 +16,11 @@ import java.io.ByteArrayOutputStream;
 public class Anomaly {
 
     @Exclude
-    public String id;
-    public String encodedImage;
-    public Criticality criticality;
-    public double longitude;
-    public double latitude;
+    private String id;
+    private String encodedImage;
+    private Criticality criticality;
+    private double longitude;
+    private double latitude;
 
 
 
@@ -48,7 +48,43 @@ public class Anomaly {
         return BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
     }
 
+    public String getId() {
+        return id;
+    }
 
+    public void setId(String id) {
+        this.id = id;
+    }
 
+    public String getEncodedImage() {
+        return encodedImage;
+    }
 
+    public void setEncodedImage(String encodedImage) {
+        this.encodedImage = encodedImage;
+    }
+
+    public Criticality getCriticality() {
+        return criticality;
+    }
+
+    public void setCriticality(Criticality criticality) {
+        this.criticality = criticality;
+    }
+
+    public double getLongitude() {
+        return longitude;
+    }
+
+    public void setLongitude(double longitude) {
+        this.longitude = longitude;
+    }
+
+    public double getLatitude() {
+        return latitude;
+    }
+
+    public void setLatitude(double latitude) {
+        this.latitude = latitude;
+    }
 }

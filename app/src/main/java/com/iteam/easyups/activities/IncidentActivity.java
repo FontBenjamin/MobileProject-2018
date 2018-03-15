@@ -170,8 +170,8 @@ public class IncidentActivity extends AppCompatActivity {
      */
     private void savePicture(Bitmap imageBitmap, Criticality criticality) {
         Anomaly anomaly = new Anomaly(imageBitmap, criticality, longitude, latitude);
-        anomaly.id = database.getReference().push().getKey();
-        database.getReference().child(BDDRoutes.ANOMALY_PATH).child(anomaly.id).setValue(anomaly);
+        anomaly.setId(database.getReference().push().getKey());
+        database.getReference().child(BDDRoutes.ANOMALY_PATH).child(anomaly.getId()).setValue(anomaly);
         finish();
     }
 
