@@ -69,6 +69,7 @@
                 android:padding="15dp"
                 android:text="Vous avez déjà un compte? S'authentifier"
                 android:textAlignment="center"
+                android:textColor="#0037ff"
                 android:textAppearance="@style/Base.TextAppearance.AppCompat.Medium" />
 
 

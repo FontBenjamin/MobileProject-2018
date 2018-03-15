@@ -71,6 +71,7 @@
                 android:layout_height="wrap_content"
                 android:padding="15dp"
                 android:text="Vous n'avez pas de compte? S'inscrire"
+                android:textColor="#0037ff"
                 android:textAlignment="center"
                 android:textAppearance="@style/Base.TextAppearance.AppCompat.Medium"
                 />
